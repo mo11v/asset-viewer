@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>عرض الجهاز - Asset Viewer</title>
+
+  <style>
+    /* --- Reset / base --- */
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --accent:#0b66ff;
+      --accent-dark:#0a54d1;
+      --muted:#64748b;
+      --success:#16a34a;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 30px rgba(2,6,23,0.08);
+      font-family: "Tajawal", Tahoma, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;background:linear-gradient(180deg,#f4f7fb 0%, #eef3fb 100%);margin:0;padding:18px;color:#0f172a}
+    .center{max-width:980px;margin:18px auto;padding:10px;}
+    .card{
+      background:var(--card);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    /* header */
+    header{
+      display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid #f0f3f7;
+      background:linear-gradient(90deg, rgba(11,102,255,0.06), rgba(11,102,255,0.02));
+    }
+    .logo{
+      width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;flex-shrink:0;
+    }
+    header h1{font-size:18px;margin:0;color:var(--accent-dark)}
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    /* content layout */
+    .grid{display:grid;grid-template-columns: 1fr 360px;gap:18px;padding:18px}
+    @media(max-width:940px){ 
+      .grid{grid-template-columns:1fr} 
+      .side{order:1;border-left:none;border-bottom:1px solid #f3f6fa;padding-bottom:18px} 
+      .main{order:2} 
+    }
+
+    /* main column - details */
+    .main {padding:12px}
+    .asset-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .asset-title h2{margin:0;font-size:20px;color:#0b2545}
+    .badge{padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px;color:#fff;white-space:nowrap}
+    .badge.green{background:var(--success)}
+    .badge.yellow{background:var(--warn);color:#1f1f1f}
+    .badge.red{background:var(--danger)}
+
+    .meta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+    .meta{background:#fbfdff;padding:10px;border-radius:10px;min-width:140px;box-shadow:0 3px 10px rgba(12,20,30,0.03);flex:1}
+    .meta b{display:block;color:#0b2545;margin-bottom:4px}
+    .meta .small{word-break:break-word}
+    .components{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+
+    .comp-item{padding:10px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 4px 14px rgba(12,20,30,0.03)}
+    .comp-item .name{color:#0b2545;font-weight:600;word-break:break-word}
+    .comp-item .state{font-weight:700;padding:6px 10px;border-radius:8px;font-size:13px;white-space:nowrap}
+
+    /* side column - image + actions */
+    .side{padding:12px;border-left:1px solid #f3f6fa}
+    .photo{
+      border-radius:12px;overflow:hidden;border:1px solid #eef3fb;background:linear-gradient(180deg,#ffffff,#f8fbff);
+    }
+    .photo img{width:100%;height:260px;object-fit:cover;display:block}
+    .actions{margin-top:12px;display:grid;gap:10px}
+    .btn{
+      display:inline-block;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-weight:700;
+      box-shadow:0 8px 20px rgba(2,6,23,0.06);transition:all 0.2s;cursor:pointer;border:none;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(2,6,23,0.12)}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:transparent;border:1px solid #e6eefc;color:var(--accent-dark)}
+    .btn.green{background:#059669;color:#fff}
+    .btn.video{background:linear-gradient(90deg,#ff6b6b,#ff914d);color:#fff}
+    .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+
+    /* small table area */
+    .table{
+      margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid #f0f4fb;
+      background:#fff;
+    }
+    .table-row{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid #f6f9fd;align-items:center}
+    .table-row:last-child{border-bottom:none}
+    .col-title{width:160px;color:#64748b;font-weight:700;flex-shrink:0}
+    .col-val{flex:1;color:#0b2545;font-weight:600;word-break:break-word}
+    .col-val a{color:var(--accent);text-decoration:none}
+    .col-val a:hover{text-decoration:underline}
+
+    /* loading / errors */
+    .loader{padding:40px;text-align:center;color:#475569}
+    .small{font-size:13px;color:#64748b}
+
+    /* modal image viewer */
+    .modal {
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,10,20,0.8);z-index:9999;padding:20px;
+    }
+    .modal.open{display:flex}
+    .modal .box{max-width:980px;width:100%;max-height:90vh;background:transparent;display:flex;flex-direction:column;gap:12px}
+    .modal img{width:100%;height:auto;max-height:80vh;border-radius:10px;object-fit:contain;box-shadow:0 10px 40px rgba(2,6,23,0.5);background:#fff}
+    .modal .close{align-self:flex-end;background:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+    .modal .close:hover{background:#f0f0f0}
+
+    /* footer small */
+    footer{margin-top:16px;padding:10px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {opacity:0;transform:translateY(10px)}
+      to {opacity:1;transform:translateY(0)}
+    }
+    .main, .side{animation:fadeIn 0.4s ease}
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="card">
+      <header>
+        <div class="logo">AS</div>
+        <div>
+          <h1>نظام عرض حالة الأصول</h1>
+          <p class="small">امسح QR أو افتح الرابط مباشرة مع ?id=رقم_الوحدة</p>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- LEFT: main details -->
+        <div class="main" style="display:none">
+          <div id="mainArea">
+            <div class="asset-title">
+              <h2 id="assetTitle">--</h2>
+              <div id="statusBadge" class="badge green">--</div>
+            </div>
+
+            <div class="meta-row">
+              <div class="meta"><b>الرقم (Unit)</b><div id="metaUnit" class="small">--</div></div>
+              <div class="meta"><b>الموقع</b><div id="metaLocation" class="small">--</div></div>
+              <div class="meta"><b>آخر فحص</b><div id="metaLast" class="small">--</div></div>
+            </div>
+
+            <div class="components" id="componentsArea">
+              <!-- component items injected here -->
+            </div>
+
+            <div class="table" id="tableArea" style="display:none">
+              <!-- optional detailed rows -->
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: image + actions -->
+        <aside class="side" style="display:none">
+          <div class="photo">
+            <img id="assetPhoto" src="" alt="Asset image" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22320%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f7fb%22 /><text x=%2250%25%22 y=%2250%25%22 fill=%22%239aa6b2%22 font-size=%2218%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>لا توجد صورة</text></svg>'" />
+          </div>
+
+          <div class="actions">
+            <button id="openChecklist" class="btn primary">عرض Checklist</button>
+            <button id="openRig" class="btn green">عرض Rig Site</button>
+            <a id="openVideo" class="btn video" href="#" target="_blank" style="display:none">تشغيل الفيديو</a>
+            <a id="openExternal" class="btn ghost" href="#" target="_blank">فتح السجل الكامل</a>
+          </div>
+        </aside>
+
+        <div id="loader" class="loader">جارِ تحميل بيانات الجهاز من Google Sheets ...</div>
+        <div id="error" class="loader" style="display:none;color:var(--danger)"></div>
+      </div>
+
+      <footer>النظام يقرأ البيانات مباشرة من Google Sheets — عدّل الشيت لتحديث المحتوى فورًا.</footer>
+    </div>
+  </div>
+
+  <!-- Modal for images -->
+  <div id="modal" class="modal">
+    <div class="box">
+      <div class="close">إغلاق ✕</div>
+      <img id="modalImg" src="" alt="Preview" />
+    </div>
+  </div>
+
+  <script>
+    /***************************************************
+     *    إعدادات: عدّل هذا السطر فقط لو احتجت       *
+     ***************************************************/
+    const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit') || null;
+
+    // Helpers
+    function makeBadge(text){
+      const t = String(text || "").toLowerCase().trim();
+      if(/^(good|ok|yes|ready|green|true|working|operational)$/i.test(t)) return {cls:'green', txt: text};
+      if(/^(warn|needs|check|pending|yellow|attention)$/i.test(t)) return {cls:'yellow', txt: text};
+      if(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down)$/i.test(t)) return {cls:'red', txt: text};
+      // More flexible matching
+      if(t.includes('good') || t.includes('ok')) return {cls:'green', txt: text};
+      if(t.includes('warn') || t.includes('check')) return {cls:'yellow', txt: text};
+      if(t.includes('fault') || t.includes('bad') || t.includes('fail')) return {cls:'red', txt: text};
+      return {cls:'yellow', txt: text || 'Unknown'};
+    }
+
+    function safeGet(obj, keys){
+      for(const k of keys){
+        const val = obj[k];
+        if(val !== null && val !== undefined && String(val).trim() !== '') return val;
+      }
+      return null;
+    }
+
+    function openModalWith(url){
+      if(!url) return;
+      const modal = document.getElementById('modal');
+      const img = document.getElementById('modalImg');
+      img.src = url;
+      modal.classList.add('open');
+    }
+    
+    function closeModal(){
+      const modal = document.getElementById('modal');
+      modal.classList.remove('open');
+      setTimeout(() => {
+        document.getElementById('modalImg').src = '';
+      }, 300);
+    }
+
+    // Modal event handlers
+    document.getElementById('modal').addEventListener('click', function(e){
+      if(e.target === this) closeModal();
+    });
+    document.querySelector('.modal .close').addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+    // Fetch and display data
+    fetch(SHEET_JSON)
+      .then(r => {
+        if(!r.ok) throw new Error('فشل في جلب البيانات من الشيت');
+        return r.json();
+      })
+      .then(rows => {
+        if(!rows || rows.length === 0) throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
+
+        let found = null;
+        if(queryId){
+          const candidates = ['Unit','unit','AssetID','Asset Id','Asset ID','ID','id','UnitNumber','Unit No','UnitNo'];
+          for(const row of rows){
+            for(const key of Object.keys(row)){
+              const val = String(row[key] || '').trim();
+              if(val === queryId || (candidates.includes(key) && val === queryId)){
+                found = row;
+                break;
+              }
+            }
+            if(found) break;
+          }
+        } else {
+          found = rows[0];
+        }
+
+        if(!found){
+          throw new Error('لم أجد الجهاز في الشيت. تأكد من قيمة ?id في الرابط');
+        }
+
+        // Process data
+        const get = (names) => safeGet(found, names);
+        
+        const unit = get(['Unit','unit','UNIT','Unit #','AssetID','Asset ID']) || '';
+        const systemName = get(['System','system','System Name','Name','Asset Name']) || 'Asset';
+        const photo = get(['ImageURL','Image Url','Image','Photo','image','imageurl','ImageUrl']) || '';
+        const checklist = get(['Checklist','ChecklistURL','Checklist URL','Checklist Image','ChecklistImage']) || '';
+        const rigsite = get(['RigSite','Rig Site','RigSiteURL','Rig Site Image','RigSite Image','RigSiteImage']) || '';
+        const video = get(['VideoLink','Video Link','Video','video','VideoURL','Video URL']) || '';
+        const ready = get(['Ready','Status','State','Ready?','status']) || '';
+        const location = get(['Location','Site','location']) || '';
+        const last = get(['LastInspection','Last Check','Last Checked','LastCheck','Last Inspection']) || '';
+
+        // Find components
+        const compNames = ['Loadcell','Load Cell','Encoder','DumpValve','Dump Valve','Controller','PowerSupply','Power Supply','Cables','Cable','System','Valve'];
+        const comps = [];
+        const usedKeys = new Set();
+
+        for(const k of Object.keys(found)){
+          const kLower = k.toLowerCase().trim();
+          for(const cname of compNames){
+            if(kLower.includes(cname.toLowerCase()) && !usedKeys.has(k)){
+              const val = found[k];
+              if(val !== null && val !== undefined && String(val).trim() !== ''){
+                comps.push({name: k, value: val});
+                usedKeys.add(k);
+                break;
+              }
+            }
+          }
+        }
+
+        // Display UI
+        document.getElementById('loader').style.display='none';
+        document.querySelector('.main').style.display='block';
+        document.querySelector('.side').style.display='block';
+
+        document.getElementById('assetTitle').innerText = systemName + (unit ? ` (${unit})` : '');
+        const b = makeBadge(ready);
+        const statusBadge = document.getElementById('statusBadge');
+        statusBadge.className = 'badge ' + b.cls;
+        statusBadge.innerText = b.txt || 'Unknown';
+
+        document.getElementById('metaUnit').innerText = unit || '--';
+        document.getElementById('metaLocation').innerText = location || '--';
+        document.getElementById('metaLast').innerText = last || '--';
+        document.getElementById('assetPhoto').src = photo || '';
+
+        // Components
+        const area = document.getElementById('componentsArea');
+        area.innerHTML = '';
+        for(const c of comps){
+          const div = document.createElement('div');
+          div.className = 'comp-item';
+          const name = document.createElement('div');
+          name.className = 'name';
+          name.innerText = c.name;
+          const state = document.createElement('div');
+          state.className = 'state';
+          const st = makeBadge(c.value);
+          state.classList.add(st.cls);
+          state.innerText = st.txt || String(c.value || '-');
+          div.appendChild(name);
+          div.appendChild(state);
+          area.appendChild(div);
+        }
+
+        // Detail table
+        const table = document.getElementById('tableArea');
+        table.style.display='block';
+        table.innerHTML = '';
+        const skipKeys = ['ImageURL','Image','Photo','Checklist','ChecklistURL','RigSite','RigSiteURL','VideoLink','Video'];
+        for(const k of Object.keys(found)){
+          if(skipKeys.some(sk => k.toLowerCase().includes(sk.toLowerCase()))) continue;
+          const val = found[k];
+          if(!val || String(val).trim() === '') continue;
+
+          const row = document.createElement('div');
+          row.className = 'table-row';
+          const t = document.createElement('div');
+          t.className='col-title';
+          t.innerText = k;
+          const v = document.createElement('div');
+          v.className='col-val';
+          
+          const valStr = String(val);
+          if(valStr.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)){
+            const a = document.createElement('a');
+            a.href = '#';
+            a.innerText = 'عرض صورة';
+            a.onclick = (e) => { e.preventDefault(); openModalWith(valStr); };
+            v.appendChild(a);
+          } else if(valStr.startsWith('http')){
+            const a = document.createElement('a');
+            a.href = valStr;
+            a.target='_blank';
+            a.innerText = valStr.length > 40 ? valStr.substring(0,40) + '...' : valStr;
+            v.appendChild(a);
+          } else {
+            v.innerText = valStr;
+          }
+          row.appendChild(t);
+          row.appendChild(v);
+          table.appendChild(row);
+        }
+
+        // Button handlers
+        document.getElementById('openChecklist').addEventListener('click', function(){
+          if(!checklist){
+            alert('لا يوجد رابط Checklist في الشيت');
+            return;
+          }
+          openModalWith(checklist);
+        });
+
+        document.getElementById('openRig').addEventListener('click', function(){
+          if(!rigsite){
+            alert('لا يوجد رابط Rig Site في الشيت');
+            return;
+          }
+          openModalWith(rigsite);
+        });
+
+        const videoBtn = document.getElementById('openVideo');
+        if(video){
+          videoBtn.style.display='inline-block';
+          videoBtn.href = video;
+        }
+
+        document.getElementById('openExternal').href = "https://docs.google.com/spreadsheets/d/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc";
+
+      })
+      .catch(err => {
+        document.getElementById('loader').style.display='none';
+        document.getElementById('error').style.display='block';
+        document.getElementById('error').innerText = 'حدث خطأ: ' + (err.message || err);
+        console.error('Error:', err);
+      });
+  </script>
+</body>
+</html>
