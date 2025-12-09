@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>قائمة الأصول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Styles are minimized for brevity, focusing on the list layout */
+    :root{
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --radius-lg: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .header-card h1 {
+        font-size: 28px;
+        color: var(--primary-dark);
+        margin-bottom: 8px;
+    }
+    
+    .header-card p {
+        color: var(--text-secondary);
+        font-size: 16px;
+    }
+
+    .asset-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .asset-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      border-right: 8px solid var(--primary);
+    }
+
+    .asset-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+
+    .asset-info h3 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .asset-info p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .unit-id {
+      background: var(--primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    
+    .loader-box, .error-box {
+      text-align: center;
+      padding: 50px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      color: var(--text-secondary);
+    }
+    
+    .loader {
+        border: 5px solid rgba(37, 99, 235, 0.2);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-card">
+      <h1>قائمة الأصول والمعدات</h1>
+      <p>اختر الجهاز لعرض التفاصيل الكاملة وحالته.</p>
+    </div>
+
+    <div id="loading" class="loader-box">
+        <div class="loader"></div>
+        <p>جارِ تحميل قائمة الأجهزة...</p>
+    </div>
+    
+    <div id="error" class="error-box" style="display: none;">
+        <p>⚠️ لم يتمكن النظام من جلب الأجهزة. <span id="error-message"></span></p>
+    </div>
+
+    <div id="assetList" class="asset-list">
+        </div>
+  </div>
+
+  <script>
+    // ⚠️ تأكد من أن هذا الرابط هو رابط OpenSheet الصحيح الذي يعمل لديك!
+    const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
+    
+    // المفاتيح المتوقعة في جدول البيانات
+    const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
+    const NAME_KEYS = ['System', 'system', 'System Name', 'Name', 'Asset Name'];
+    const LOCATION_KEYS = ['Location', 'Site', 'location'];
+
+    function safeGet(obj, keys) {
+      for (const k of keys) {
+        const val = obj[k];
+        if (val !== null && val !== undefined && String(val).trim() !== '') {
+          return String(val).trim();
+        }
+      }
+      return null;
+    }
+
+    function displayError(message) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error-message').textContent = message;
+    }
+
+    fetch(SHEET_JSON)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
+        }
+        return response.json();
+      })
+      .then(rows => {
+        document.getElementById('loading').style.display = 'none';
+        const assetListContainer = document.getElementById('assetList');
+        
+        if (!rows || rows.length === 0) {
+          assetListContainer.innerHTML = '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
+          return;
+        }
+
+        rows.forEach(asset => {
+          const unitId = safeGet(asset, ID_KEYS);
+          const systemName = safeGet(asset, NAME_KEYS);
+          const location = safeGet(asset, LOCATION_KEYS);
+
+          if (unitId && systemName) {
+            const card = document.createElement('a');
+            // ⚠️ ملاحظة: يجب أن تكون صفحة التفاصيل باسم asset-viewer.html أو أي اسم تستخدمه
+            card.href = `asset-viewer.html?id=${encodeURIComponent(unitId)}`; 
+            card.className = 'asset-card';
+
+            card.innerHTML = `
+              <div class="asset-info">
+                <h3>${systemName}</h3>
+                <p>الموقع: ${location || 'غير محدد'}</p>
+              </div>
+              <div class="unit-id">${unitId}</div>
+            `;
+
+            assetListContainer.appendChild(card);
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        displayError(error.message);
+      });
+  </script>
+</body>
+</html>
