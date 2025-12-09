@@ -3,1029 +3,611 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>عرض الجهاز - Asset Viewer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <title>عرض الأصول - Asset Viewer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
   
   <style>
+    /* ------------------------------------------------------------------------------------------------
+     * 🎨 تصميم حديث ومحسن
+     * ------------------------------------------------------------------------------------------------ */
     :root{
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --primary-light: #3b82f6;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --bg-main: #0f172a;
-      --bg-secondary: #1e293b;
-      --card-bg: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --border: #e2e8f0;
-      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
-      --radius: 12px;
-      --radius-lg: 16px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-      color: var(--text-primary);
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* Header Card */
-    .header-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-xl);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .header-content {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .logo-box {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 28px;
-      font-weight: 900;
-      box-shadow: var(--shadow-lg);
-      flex-shrink: 0;
-    }
-
-    .header-text h1 {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-
-    .header-text p {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    /* Loading & Error States */
-    .state-box {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 60px 30px;
-      text-align: center;
-      box-shadow: var(--shadow-xl);
-      animation: fadeIn 0.4s ease;
-    }
-
-    .loader {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(37, 99, 235, 0.2);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .state-text {
-      font-size: 16px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .error-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      color: var(--danger);
-    }
-
-    /* Main Content Grid */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 24px;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @media (max-width: 1024px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
+      /* الألوان الأساسية */
+      --color-bg: #f5f8fc;
+      --color-card: #ffffff;
+      --color-primary: #0b66ff; /* أزرق أساسي */
+      --color-primary-dark: #0747a6;
+      --color-text: #1f2937;
+      --color-muted: #6b7280;
+      --color-border: #e2e8f0;
       
-      .sidebar {
-        order: -1;
-      }
+      /* ألوان الحالة */
+      --color-success: #10b981; /* أخضر */
+      --color-warn: #f59e0b;   /* أصفر */
+      --color-danger: #ef4444;  /* أحمر */
+      
+      /* تأثيرات */
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+      --radius: 12px;
+      
+      font-family: "Tajawal", Tahoma, Arial, sans-serif;
+    }
+    
+    /* --- Reset / Base --- */
+    *{box-sizing:border-box}
+    html,body{height:100%;background:var(--color-bg);margin:0;padding:20px;color:var(--color-text)}
+    .center{max-width:1024px;margin:20px auto;padding:10px;}
+    .card{
+      background:var(--color-card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-md);
+      overflow:hidden;
+      border: 1px solid var(--color-border);
     }
 
-    /* Main Panel */
-    .main-panel {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      box-shadow: var(--shadow-xl);
+    /* ---------------------- Header - شريط العنوان ---------------------- */
+    header{
+      display:flex;align-items:center;gap:15px;padding:20px 25px;
+      /* تأثير الزجاج (Glassmorphism) */
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(5px);
+      border-bottom:1px solid var(--color-border);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo{
+      width:60px;height:60px;border-radius:12px;
+      background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:24px;flex-shrink:0;
+      box-shadow: 0 5px 15px rgba(11,102,255,0.3);
+    }
+    header h1{font-size:20px;margin:0;color:var(--color-primary-dark);font-weight:800}
+    header p{margin:0;color:var(--color-muted);font-size:14px}
+    header .icon{font-size: 20px;}
+
+    /* ---------------------- Content Layout - تقسيم المحتوى ---------------------- */
+    .grid{display:grid;grid-template-columns: 1fr 380px;gap:20px;padding:20px}
+    @media(max-width:1000px){ 
+      .grid{grid-template-columns:1fr} 
+      .side{order:1;border-left:none;border-bottom:1px solid var(--color-border);padding-bottom:20px} 
+      .main{order:2} 
     }
 
-    .asset-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      padding-bottom: 24px;
-      border-bottom: 2px solid var(--border);
-      margin-bottom: 24px;
+    /* ---------------------- Main Column - التفاصيل الرئيسية ---------------------- */
+    .main {padding:15px}
+    .asset-title{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+    .asset-title h2{margin:0;font-size:24px;color:var(--color-text);font-weight:800}
+    
+    .badge{
+      padding:8px 14px;border-radius:999px;font-weight:700;font-size:14px;color:#fff;white-space:nowrap;
+      box-shadow: var(--shadow-sm);
     }
+    .badge.green{background:var(--color-success)}
+    .badge.yellow{background:var(--color-warn);color:#1f1f1f}
+    .badge.red{background:var(--color-danger)}
 
-    .asset-title {
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--text-primary);
-      flex: 1;
-      min-width: 200px;
+    .meta-row{display:grid;grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));gap:15px;margin-top:20px}
+    .meta{
+      background:var(--color-bg);
+      padding:15px;border-radius:var(--radius);
+      box-shadow:var(--shadow-sm);
+      border: 1px solid var(--color-border);
     }
+    .meta b{display:block;color:var(--color-primary-dark);margin-bottom:6px;font-weight:700;font-size:15px}
+    .meta .small{word-break:break-word;font-weight:600;color:var(--color-text)}
+    
+    /* قائمة المكونات */
+    .components{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
 
-    .status-badge {
-      padding: 10px 20px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: var(--shadow);
-      animation: pulse 2s ease-in-out infinite;
+    .comp-item{
+      padding:15px;border-radius:var(--radius);
+      background:var(--color-card);
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      box-shadow:var(--shadow-sm);
+      border-left: 5px solid; /* شريط جانبي متغير */
     }
+    .comp-item.green{border-color:var(--color-success);}
+    .comp-item.yellow{border-color:var(--color-warn);}
+    .comp-item.red{border-color:var(--color-danger);}
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    .comp-item .name{color:var(--color-text);font-weight:700;word-break:break-word;font-size:16px}
+    .comp-item .state{font-weight:800;padding:6px 12px;border-radius:8px;font-size:14px;white-space:nowrap;color:#fff;}
+    .comp-item .state.green{background:var(--color-success);}
+    .comp-item .state.yellow{background:var(--color-warn);color:var(--color-text);}
+    .comp-item .state.red{background:var(--color-danger);}
+    .comp-item .icon {color: var(--color-muted); font-size: 20px;}
+
+    /* ---------------------- Side Column - الصورة والإجراءات ---------------------- */
+    .side{padding:15px;border-left:1px solid var(--color-border)}
+    @media(max-width:1000px){ .side{border-left:none} }
+    
+    .photo{
+      border-radius:var(--radius);overflow:hidden;border:1px solid var(--color-border);
+      background:linear-gradient(180deg,#f8fbfd,#fff);
+      box-shadow:var(--shadow-sm);
+      cursor: pointer; /* للإشارة إلى أن الصورة قابلة للنقر */
     }
-
-    .status-badge.green {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .status-badge.yellow {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;
-    }
-
-    .status-badge.red {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-    }
-
-    /* Meta Cards */
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .meta-card {
-      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      padding: 20px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      transition: all 0.3s ease;
-    }
-
-    .meta-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .meta-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .meta-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      word-break: break-word;
-    }
-
-    /* Components Section */
-    .section-title {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-title::before {
-      content: '';
-      width: 4px;
-      height: 24px;
-      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
-      border-radius: 2px;
-    }
-
-    .components-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-
-    .component-card {
-      background: white;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .component-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow);
-      transform: translateX(-4px);
-    }
-
-    .component-name {
-      font-weight: 700;
-      color: var(--text-primary);
-      font-size: 15px;
-    }
-
-    .component-status {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .component-status.green {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .component-status.yellow {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .component-status.red {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    /* Details Table */
-    .details-table {
-      background: #f8fafc;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .detail-row {
-      display: flex;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s ease;
-    }
-
-    .detail-row:last-child {
-      border-bottom: none;
-    }
-
-    .detail-row:hover {
-      background: white;
-    }
-
-    .detail-label {
-      width: 200px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .detail-value {
-      flex: 1;
-      color: var(--text-primary);
-      font-weight: 500;
-      word-break: break-word;
-    }
-
-    .detail-value a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      transition: color 0.2s ease;
-    }
-
-    .detail-value a:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .image-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-xl);
-    }
-
-    .asset-image-wrapper {
-      position: relative;
-      border-radius: var(--radius);
-      overflow: hidden;
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .asset-image-wrapper:hover {
-      transform: scale(1.02);
-    }
-
-    .asset-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .image-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
+    .photo img{width:100%;height:300px;object-fit:cover;display:block;transition: transform 0.3s;}
+    .photo img:hover{transform: scale(1.02);}
+    
+    .actions{margin-top:15px;display:grid;gap:10px}
+    .btn{
+      display:inline-block;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:800;
+      box-shadow:0 8px 20px rgba(2,6,23,0.06);transition:all 0.3s;cursor:pointer;border:none;
       font-size: 16px;
-      color: var(--text-muted);
-      font-weight: 600;
     }
-
-    /* Action Buttons */
-    .actions-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-xl);
+    .btn:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(2,6,23,0.12)}
+    .btn.primary{background:var(--color-primary);color:#fff}
+    .btn.ghost{
+      background:transparent;border:2px solid var(--color-border);color:var(--color-text);
+      box-shadow:none;
     }
-
-    .actions-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .btn.green{background:var(--color-success);color:#fff}
+    .btn.video{
+      background:linear-gradient(90deg,#ff4d4d,#ff914d);color:#fff;
+      box-shadow: 0 8px 20px rgba(255, 77, 77, 0.4);
     }
+    .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+    .btn .icon {margin-left: 8px;}
 
-    .action-btn {
-      padding: 16px 20px;
-      border-radius: var(--radius);
-      border: none;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      font-family: 'Tajawal', sans-serif;
+
+    /* ---------------------- Small Table Area - جدول التفاصيل الإضافية ---------------------- */
+    .table{
+      margin-top:20px;border-radius:var(--radius);overflow:hidden;
+      border:1px solid var(--color-border);
+      background:var(--color-card);
+      box-shadow:var(--shadow-sm);
     }
+    .table-row{display:flex;gap:10px;padding:12px 15px;border-bottom:1px solid #f6f9fd;align-items:center}
+    .table-row:last-child{border-bottom:none}
+    .col-title{width:180px;color:var(--color-muted);font-weight:700;flex-shrink:0;font-size:14px}
+    .col-val{flex:1;color:var(--color-text);font-weight:600;word-break:break-word}
+    .col-val a{color:var(--color-primary);text-decoration:none;font-weight:700}
+    .col-val a:hover{text-decoration:underline}
 
-    .action-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .action-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .action-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .action-btn.primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-    }
-
-    .action-btn.success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .action-btn.danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-    }
-
-    .action-btn.outline {
-      background: white;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .action-btn.outline:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* Modal */
+    /* ---------------------- Loading / Errors - التحميل والأخطاء ---------------------- */
+    .loader{padding:40px;text-align:center;color:var(--color-muted);font-size:16px;font-weight:600;}
+    .small{font-size:14px;color:var(--color-muted)}
+    
+    /* ---------------------- Modal Image Viewer - عارض الصور المنبثق ---------------------- */
     .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(8px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-      animation: fadeIn 0.3s ease;
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+      background:rgba(6,10,20,0.9);z-index:9999;padding:20px;
     }
-
-    .modal.open {
-      display: flex;
+    .modal.open{display:flex}
+    .modal .box{max-width:90vw;width:100%;max-height:90vh;background:transparent;display:flex;flex-direction:column;gap:15px;align-items: center;}
+    .modal img{
+      width:auto; max-width:100%; height:auto; max-height:80vh; 
+      border-radius:var(--radius);object-fit:contain;
+      box-shadow:0 10px 40px rgba(2,6,23,0.5);background:#fff;
     }
-
-    .modal-content {
-      max-width: 1200px;
-      width: 100%;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      animation: slideUp 0.3s ease;
+    .modal .close{
+      align-self: flex-end; /* وضع زر الإغلاق في الزاوية */
+      background:var(--color-card);color:var(--color-text);
+      padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:700;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      border: 1px solid var(--color-border);
     }
+    .modal .close:hover{background:#f0f0f0}
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    /* ---------------------- Footer - التذييل ---------------------- */
+    footer{margin-top:20px;padding:10px;text-align:center;color:var(--color-muted);font-size:13px}
 
-    .modal-close {
-      align-self: flex-end;
-      background: white;
-      color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: var(--radius);
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      box-shadow: var(--shadow-lg);
-      transition: all 0.2s ease;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 14px;
-    }
-
-    .modal-close:hover {
-      background: var(--danger);
-      color: white;
-      transform: scale(1.05);
-    }
-
-    .modal-image {
-      width: 100%;
-      height: auto;
-      max-height: 80vh;
-      object-fit: contain;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-xl);
-      background: white;
-    }
-
-    /* Footer */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 14px;
-      font-weight: 500;
-      margin-top: 24px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius);
-    }
-
-    /* Animations */
+    /* ---------------------- Animations - تأثيرات الحركة ---------------------- */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from {opacity:0;transform:translateY(15px)}
+      to {opacity:1;transform:translateY(0)}
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      body {
-        padding: 12px;
-      }
-
-      .header-card {
-        padding: 16px;
-      }
-
-      .header-text h1 {
-        font-size: 18px;
-      }
-
-      .logo-box {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-      }
-
-      .main-panel {
-        padding: 20px;
-      }
-
-      .asset-title {
-        font-size: 20px;
-      }
-
-      .components-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .detail-row {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .detail-label {
-        width: 100%;
-      }
-    }
+    .main, .side{animation:fadeIn 0.5s ease-out}
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <div class="header-card">
-      <div class="header-content">
-        <div class="logo-box">AS</div>
-        <div class="header-text">
-          <h1>نظام عرض حالة الأصول</h1>
-          <p>امسح QR أو افتح الرابط مباشرة مع ?id=رقم_الوحدة</p>
+  <div class="center">
+    <div class="card">
+      <header>
+        <div class="logo">AS</div>
+        <div>
+          <h1>نظام عرض حالة الأصول <span class="icon">💻</span></h1>
+          <p class="small">البيانات تُقرأ مباشرة من Google Sheets - يرجى استخدام ?id=رقم_الوحدة للمسح المباشر</p>
         </div>
-      </div>
-    </div>
+      </header>
 
-    <!-- Loading State -->
-    <div id="loadingState" class="state-box">
-      <div class="loader"></div>
-      <div class="state-text">جارِ تحميل بيانات الجهاز من Google Sheets...</div>
-    </div>
+      <div class="grid">
+        <div class="main" style="display:none">
+          <div id="mainArea">
+            <div class="asset-title">
+              <h2 id="assetTitle">--</h2>
+              <div id="statusBadge" class="badge yellow">--</div>
+            </div>
 
-    <!-- Error State -->
-    <div id="errorState" class="state-box" style="display: none;">
-      <div class="error-icon">⚠️</div>
-      <div class="state-text" id="errorMessage"></div>
-    </div>
+            <div class="meta-row">
+              <div class="meta"><b><span class="icon">#</span> الرقم (Unit)</b><div id="metaUnit" class="small">--</div></div>
+              <div class="meta"><b><span class="icon">📍</span> الموقع</b><div id="metaLocation" class="small">--</div></div>
+              <div class="meta"><b><span class="icon">🗓️</span> آخر فحص</b><div id="metaLast" class="small">--</div></div>
+            </div>
 
-    <!-- Main Content -->
-    <div id="mainContent" class="content-grid" style="display: none;">
-      <!-- Main Panel -->
-      <div class="main-panel">
-        <!-- Asset Header -->
-        <div class="asset-header">
-          <h2 class="asset-title" id="assetTitle">--</h2>
-          <div class="status-badge green" id="statusBadge">--</div>
-        </div>
-
-        <!-- Meta Information -->
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-label">رقم الوحدة</div>
-            <div class="meta-value" id="metaUnit">--</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">الموقع</div>
-            <div class="meta-value" id="metaLocation">--</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">آخر فحص</div>
-            <div class="meta-value" id="metaLast">--</div>
+            <h3 style="margin-top: 25px; margin-bottom: 10px; color: var(--color-primary-dark); font-weight: 700;">تفاصيل المكونات <span class="icon">⚙️</span></h3>
+            <div class="components" id="componentsArea">
+              </div>
+            
+            <h3 style="margin-top: 25px; margin-bottom: 10px; color: var(--color-primary-dark); font-weight: 700;">تفاصيل إضافية <span class="icon">📄</span></h3>
+            <div class="table" id="tableArea" style="display:none">
+              </div>
+            
           </div>
         </div>
 
-        <!-- Components -->
-        <h3 class="section-title">مكونات النظام</h3>
-        <div class="components-grid" id="componentsArea"></div>
+        <aside class="side" style="display:none">
+          <div class="photo">
+            <img id="assetPhoto" src="" alt="Asset image" title="اضغط للتكبير" 
+            onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22320%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f7fb%22 /><text x=%2250%25%22 y=%2250%25%22 fill=%22%239aa6b2%22 font-size=%2218%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>لا توجد صورة</text></svg>'" />
+          </div>
 
-        <!-- Details Table -->
-        <div id="detailsSection" style="display: none;">
-          <h3 class="section-title">تفاصيل إضافية</h3>
-          <div class="details-table" id="detailsTable"></div>
+          <div class="actions">
+            <button id="openChecklist" class="btn primary"><span class="icon">📋</span> عرض Checklist</button>
+            <button id="openRig" class="btn green"><span class="icon">🏗️</span> عرض Rig Site</button>
+            <a id="openVideo" class="btn video" href="#" target="_blank" style="display:none"><span class="icon">▶️</span> تشغيل الفيديو</a>
+            <a id="openExternal" class="btn ghost" href="#" target="_blank"><span class="icon">🔗</span> فتح السجل الكامل (Sheet)</a>
+          </div>
+        </aside>
+
+        <div id="loader" class="loader">
+          <div style="font-size: 30px; margin-bottom: 10px;">⏳</div>
+          جارِ تحميل بيانات الجهاز من Google Sheets ...
         </div>
+        <div id="error" class="loader" style="display:none;color:var(--color-danger)"></div>
       </div>
 
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <!-- Image Card -->
-        <div class="image-card">
-          <div class="asset-image-wrapper" id="imageWrapper">
-            <img class="asset-image" id="assetImage" src="" alt="صورة الجهاز" style="display: none;" />
-            <div class="image-placeholder" id="imagePlaceholder">لا توجد صورة</div>
-          </div>
-        </div>
-
-        <!-- Actions Card -->
-        <div class="actions-card">
-          <div class="actions-grid">
-            <button class="action-btn primary" id="btnChecklist">
-              📋 عرض Checklist
-            </button>
-            <button class="action-btn success" id="btnRigSite">
-              🏗️ عرض Rig Site
-            </button>
-            <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">
-              ▶️ تشغيل الفيديو
-            </a>
-            <a class="action-btn outline" id="btnExternal" href="#" target="_blank">
-              🔗 فتح السجل الكامل
-            </a>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      النظام يقرأ البيانات مباشرة من Google Sheets — عدّل الشيت لتحديث المحتوى فورًا
+      <footer>النظام يقرأ البيانات مباشرة من Google Sheets — عدّل الشيت لتحديث المحتوى فورًا.</footer>
     </div>
   </div>
 
-  <!-- Modal -->
   <div id="modal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose">إغلاق ✕</button>
-      <img class="modal-image" id="modalImage" src="" alt="معاينة" />
+    <div class="box">
+      <div class="close">إغلاق <span class="icon">✕</span></div>
+      <img id="modalImg" src="" alt="Preview" />
     </div>
   </div>
 
   <script>
-    // Configuration
+    /***************************************************
+     * ⚙️ إعدادات: عدّل هذا السطر فقط لو احتجت       *
+     ***************************************************/
+    // ** تأكد من أن هذا الرابط يعمل بشكل صحيح ويُرجع بيانات JSON من Google Sheet **
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
-    // Get query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
+    // مفاتيح البحث المقبولة في الرابط
+    const QUERY_KEYS = ['id', 'unit', 'Unit', 'UnitID', 'Unit No', 'unitnumber'];
 
-    // Utility functions
-    function safeGet(obj, keys) {
-      for (const k of keys) {
-        const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
+    // مفاتيح الأعمدة المقابلة في الشيت (الأكثر شيوعًا أولاً)
+    const MAPPING_KEYS = {
+        unit: ['Unit', 'unit', 'UNIT', 'Unit #', 'AssetID', 'Asset ID', 'UnitNumber', 'Unit No'],
+        systemName: ['System', 'system', 'System Name', 'Name', 'Asset Name'],
+        photo: ['ImageURL', 'Image Url', 'Image', 'Photo', 'image', 'imageurl'],
+        checklist: ['Checklist', 'ChecklistURL', 'Checklist URL', 'Checklist Image', 'ChecklistImage'],
+        rigsite: ['RigSite', 'Rig Site', 'RigSiteURL', 'Rig Site Image', 'RigSiteImage'],
+        video: ['VideoLink', 'Video Link', 'Video', 'video', 'VideoURL', 'Video URL'],
+        status: ['Ready', 'Status', 'State', 'Ready?', 'status'],
+        location: ['Location', 'Site', 'location'],
+        lastInspection: ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection'],
+    };
+
+    // مفاتيح المكونات للبحث في الأعمدة
+    const COMPONENT_KEYWORDS = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Pump', 'Sensor'];
+
+
+    // ------------------------------------------------------------------------------------------------
+    // 💡 دوال المساعدة (Helpers)
+    // ------------------------------------------------------------------------------------------------
+    
+    /**
+     * يحدد فئة ولون الشارة (Badge) بناءً على نص الحالة
+     * @param {string} text - نص الحالة من الشيت
+     * @returns {{cls: string, txt: string}}
+     */
+    function makeBadge(text){
+        const t = String(text || "").toLowerCase().trim();
+        if(/^(good|ok|yes|ready|green|true|working|operational)$/i.test(t) || t.includes('good') || t.includes('ok')) {
+            return {cls:'green', txt: text};
         }
-      }
-      return null;
+        if(/^(warn|needs|check|pending|yellow|attention)$/i.test(t) || t.includes('warn') || t.includes('check')) {
+            return {cls:'yellow', txt: text};
+        }
+        if(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down)$/i.test(t) || t.includes('fault') || t.includes('bad') || t.includes('fail')) {
+            return {cls:'red', txt: text};
+        }
+        return {cls:'yellow', txt: text || 'غير معروف'};
     }
 
-    function classifyStatus(text) {
-      if (!text) return { cls: 'yellow', txt: 'غير محدد' };
-      
-      const t = String(text).toLowerCase().trim();
-      
-      // Green - Good states
-      if (/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i.test(t)) {
-        return { cls: 'green', txt: text };
-      }
-      
-      // Red - Bad states
-      if (/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i.test(t)) {
-        return { cls: 'red', txt: text };
-      }
-      
-      // Yellow - Warning states
-      if (/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i.test(t)) {
-        return { cls: 'yellow', txt: text };
-      }
-      
-      // Fuzzy matching
-      if (t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) {
-        return { cls: 'green', txt: text };
-      }
-      if (t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) {
-        return { cls: 'red', txt: text };
-      }
-      if (t.includes('warn') || t.includes('check') || t.includes('تحذير')) {
-        return { cls: 'yellow', txt: text };
-      }
-      
-      return { cls: 'yellow', txt: text };
+    /**
+     * يسترجع القيمة الآمنة من كائن الصف بناءً على قائمة من المفاتيح البديلة
+     * @param {Object} obj - صف البيانات (Row Object)
+     * @param {string[]} keys - قائمة المفاتيح المحتملة للبحث
+     * @returns {string|null} القيمة أو null إذا لم تُعثر على قيمة غير فارغة
+     */
+    function safeGet(obj, keys){
+        for(const k of keys){
+            // التحقق من أن المفتاح موجود والقيمة غير فارغة
+            if(obj.hasOwnProperty(k) && String(obj[k] || '').trim() !== ''){
+                return String(obj[k]).trim();
+            }
+        }
+        return null;
     }
 
-    function showError(message) {
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('errorState').style.display = 'block';
-      document.getElementById('errorMessage').textContent = message;
+    /**
+     * يفتح عارض الصور المنبثق
+     * @param {string} url - رابط الصورة
+     */
+    function openModalWith(url){
+        if(!url) return;
+        const modal = document.getElementById('modal');
+        const img = document.getElementById('modalImg');
+        img.src = url;
+        modal.classList.add('open');
+    }
+    
+    function closeModal(){
+        const modal = document.getElementById('modal');
+        modal.classList.remove('open');
+        // تأخير بسيط لإزالة الـ src بعد انتهاء التحريك
+        setTimeout(() => {
+            document.getElementById('modalImg').src = '';
+        }, 300);
     }
 
-    function openModal(url) {
-      if (!url) return;
-      const modal = document.getElementById('modal');
-      const img = document.getElementById('modalImage');
-      img.src = url;
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
+    // ------------------------------------------------------------------------------------------------
+    // 🖼️ دوال عرض واجهة المستخدم (UI Rendering)
+    // ------------------------------------------------------------------------------------------------
+    
+    /**
+     * يعرض شارات المكونات
+     * @param {Array<{name: string, value: string}>} comps - قائمة المكونات
+     */
+    function renderComponents(comps) {
+        const area = document.getElementById('componentsArea');
+        area.innerHTML = '';
+        const iconMap = {'loadcell':'⚖️', 'encoder':'🔢', 'valve':'💧', 'controller':'🧠', 'power':'⚡', 'cable':'🔌', 'pump':'⚙️', 'sensor':'🌡️', 'system':'🖥️'};
+        
+        for(const c of comps){
+            const st = makeBadge(c.value);
+            const div = document.createElement('div');
+            div.className = `comp-item ${st.cls}`;
+            
+            // تحديد أيقونة بسيطة بناءً على الاسم
+            let icon = '🔧';
+            const nameLower = c.name.toLowerCase();
+            for(const key in iconMap) {
+                if(nameLower.includes(key)) {
+                    icon = iconMap[key];
+                    break;
+                }
+            }
+            
+            div.innerHTML = `
+                <div class="name">${icon} ${c.name}</div>
+                <div class="state ${st.cls}">${st.txt || String(c.value || '-')}</div>
+            `;
+            area.appendChild(div);
+        }
     }
 
-    function closeModal() {
-      const modal = document.getElementById('modal');
-      modal.classList.remove('open');
-      document.body.style.overflow = '';
-      setTimeout(() => {
-        document.getElementById('modalImage').src = '';
-      }, 300);
+    /**
+     * يعرض جدول التفاصيل الإضافية
+     * @param {Object} found - صف البيانات المسترجع
+     */
+    function renderDetailTable(found) {
+        const table = document.getElementById('tableArea');
+        table.style.display='block';
+        table.innerHTML = '';
+        
+        // المفاتيح التي يجب تخطيها لأنها معروضة بالفعل في مكان آخر
+        const skipKeys = Object.values(MAPPING_KEYS).flat();
+        
+        for(const k of Object.keys(found)){
+            const kLower = k.toLowerCase().trim();
+            // تخطي المفاتيح التي تم عرضها في الـ Meta أو الـ Components أو الـ Actions
+            if(skipKeys.some(sk => k.toLowerCase().includes(sk.toLowerCase())) || 
+               COMPONENT_KEYWORDS.some(ck => kLower.includes(ck.toLowerCase()))) {
+                continue;
+            }
+            
+            const val = found[k];
+            if(!val || String(val).trim() === '') continue;
+
+            const row = document.createElement('div');
+            row.className = 'table-row';
+            
+            const t = document.createElement('div');
+            t.className='col-title';
+            t.innerText = k;
+            
+            const v = document.createElement('div');
+            v.className='col-val';
+            
+            const valStr = String(val);
+            
+            // التعامل مع الروابط والصور في حقل القيمة
+            if(valStr.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)){
+                const a = document.createElement('a');
+                a.href = '#';
+                a.innerText = 'عرض صورة 🖼️';
+                a.onclick = (e) => { e.preventDefault(); openModalWith(valStr); };
+                v.appendChild(a);
+            } else if(valStr.startsWith('http')){
+                const a = document.createElement('a');
+                a.href = valStr;
+                a.target='_blank';
+                a.innerText = 'فتح الرابط 🔗';
+                v.appendChild(a);
+            } else {
+                v.innerText = valStr;
+            }
+            
+            row.appendChild(t);
+            row.appendChild(v);
+            table.appendChild(row);
+        }
     }
 
-    // Modal event listeners
-    document.getElementById('modal').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) closeModal();
-    });
+    // ------------------------------------------------------------------------------------------------
+    // 🚀 جلب البيانات والمنطق الرئيسي (Main Logic)
+    // ------------------------------------------------------------------------------------------------
+    
+    // جلب الـ ID من URL
+    let queryId = null;
+    for (const key of QUERY_KEYS) {
+        const val = urlParams.get(key);
+        if (val) {
+            queryId = val;
+            break;
+        }
+    }
 
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-
-    // Fetch and display data
+    // جلب البيانات وعرضها
     fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('فشل في جلب البيانات من Google Sheets');
-        }
-        return response.json();
+      .then(r => {
+        if(!r.ok) throw new Error('فشل في جلب البيانات من الشيت. تأكد من إعداد رابط OpenSheet.');
+        return r.json();
       })
       .then(rows => {
-        if (!rows || rows.length === 0) {
-          throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
-        }
+        if(!rows || rows.length === 0) throw new Error('الشيت فارغ أو لا يحتوي على بيانات.');
 
-        // Find the asset
-        let asset = null;
-        
-        if (queryId) {
-          const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
-          asset = rows.find(row => {
-            return idKeys.some(key => String(row[key] || '').trim() === queryId);
-          });
-        } else {
-          asset = rows[0];
-        }
-
-        if (!asset) {
-          throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}`);
-        }
-
-        // Extract data
-        const unit = safeGet(asset, ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID']) || 'غير محدد';
-        const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Name', 'Asset Name']) || 'جهاز';
-        const photo = safeGet(asset, ['ImageURL', 'Image Url', 'Image', 'Photo', 'image']);
-        const checklist = safeGet(asset, ['Checklist', 'ChecklistURL', 'Checklist URL', 'Checklist Image']);
-        const rigsite = safeGet(asset, ['RigSite', 'Rig Site', 'RigSiteURL', 'Rig Site Image']);
-        const video = safeGet(asset, ['VideoLink', 'Video Link', 'Video', 'video', 'VideoURL']);
-        const ready = safeGet(asset, ['Ready', 'Status', 'State', 'status']) || 'غير محدد';
-        const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
-        const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
-
-        // Find components
-        const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve'];
-        const components = [];
-        const usedKeys = new Set();
-
-        Object.keys(asset).forEach(key => {
-          const keyLower = key.toLowerCase();
-          const isComponent = componentKeys.some(comp => keyLower.includes(comp.toLowerCase()));
-          
-          if (isComponent && !usedKeys.has(key)) {
-            const val = asset[key];
-            if (val !== null && val !== undefined && String(val).trim() !== '') {
-              components.push({ name: key, value: val });
-              usedKeys.add(key);
+        let found = null;
+        if(queryId){
+            // البحث عن الصف المطابق للـ ID في الأعمدة المحتملة
+            const idCandidates = MAPPING_KEYS.unit.concat(QUERY_KEYS);
+            for(const row of rows){
+                for(const key of idCandidates){
+                    const val = String(row[key] || '').trim();
+                    if(val === queryId){
+                        found = row;
+                        break;
+                    }
+                }
+                if(found) break;
             }
-          }
-        });
-
-        // Display UI
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'grid';
-
-        // Set title and status
-        document.getElementById('assetTitle').textContent = `${systemName} (${unit})`;
-        const statusInfo = classifyStatus(ready);
-        const statusBadge = document.getElementById('statusBadge');
-        statusBadge.className = `status-badge ${statusInfo.cls}`;
-        statusBadge.textContent = statusInfo.txt;
-
-        // Set meta info
-        document.getElementById('metaUnit').textContent = unit;
-        document.getElementById('metaLocation').textContent = location;
-        document.getElementById('metaLast').textContent = lastCheck;
-
-        // Set image
-        if (photo) {
-          const img = document.getElementById('assetImage');
-          img.src = photo;
-          img.style.display = 'block';
-          document.getElementById('imagePlaceholder').style.display = 'none';
-          
-          img.onerror = () => {
-            img.style.display = 'none';
-            document.getElementById('imagePlaceholder').style.display = 'flex';
-          };
-
-          document.getElementById('imageWrapper').style.cursor = 'pointer';
-          document.getElementById('imageWrapper').addEventListener('click', () => {
-            openModal(photo);
-          });
-        }
-
-        // Display components
-        const componentsArea = document.getElementById('componentsArea');
-        componentsArea.innerHTML = '';
-        
-        if (components.length > 0) {
-          components.forEach(comp => {
-            const card = document.createElement('div');
-            card.className = 'component-card';
-            
-            const name = document.createElement('div');
-            name.className = 'component-name';
-            name.textContent = comp.name;
-            
-            const status = document.createElement('div');
-            status.className = 'component-status';
-            const statusInfo = classifyStatus(comp.value);
-            status.classList.add(statusInfo.cls);
-            status.textContent = statusInfo.txt;
-            
-            card.appendChild(name);
-            card.appendChild(status);
-            componentsArea.appendChild(card);
-          });
         } else {
-          componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">لا توجد مكونات محددة</div>';
+            // في حالة عدم وجود ID في الرابط، عرض أول صف
+            found = rows[0];
         }
 
-        // Display details table
-        const detailsTable = document.getElementById('detailsTable');
-        const skipKeys = ['ImageURL', 'Image', 'Photo', 'Checklist', 'ChecklistURL', 'RigSite', 'RigSiteURL', 'VideoLink', 'Video', 'Unit', 'System', 'Ready', 'Status', 'Location', 'LastInspection', 'Last Check'];
-        let hasDetails = false;
-
-        Object.keys(asset).forEach(key => {
-          const shouldSkip = skipKeys.some(sk => key.toLowerCase().includes(sk.toLowerCase())) || 
-                           components.some(c => c.name === key);
-          
-          if (shouldSkip) return;
-          
-          const val = asset[key];
-          if (!val || String(val).trim() === '') return;
-
-          hasDetails = true;
-          const row = document.createElement('div');
-          row.className = 'detail-row';
-
-          const label = document.createElement('div');
-          label.className = 'detail-label';
-          label.textContent = key;
-
-          const value = document.createElement('div');
-          value.className = 'detail-value';
-
-          const valStr = String(val);
-          
-          // Check if image
-          if (valStr.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)) {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.textContent = '🖼️ عرض الصورة';
-            link.onclick = (e) => {
-              e.preventDefault();
-              openModal(valStr);
-            };
-            value.appendChild(link);
-          }
-          // Check if URL
-          else if (valStr.startsWith('http')) {
-            const link = document.createElement('a');
-            link.href = valStr;
-            link.target = '_blank';
-            link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
-            value.appendChild(link);
-          }
-          // Regular text
-          else {
-            value.textContent = valStr;
-          }
-
-          row.appendChild(label);
-          row.appendChild(value);
-          detailsTable.appendChild(row);
-        });
-
-        if (hasDetails) {
-          document.getElementById('detailsSection').style.display = 'block';
+        if(!found){
+            throw new Error(`لم يتم العثور على الجهاز بالرقم ${queryId} في الشيت.`);
         }
 
-        // Setup action buttons
-        const btnChecklist = document.getElementById('btnChecklist');
-        btnChecklist.addEventListener('click', () => {
-          if (!checklist) {
-            alert('⚠️ لا يوجد رابط Checklist في البيانات');
-            return;
-          }
-          openModal(checklist);
+        // 1. معالجة البيانات واستخلاصها
+        const get = (keyName) => safeGet(found, MAPPING_KEYS[keyName]);
+        
+        const unit = get('unit') || '';
+        const systemName = get('systemName') || 'Asset';
+        const photo = get('photo') || '';
+        const checklist = get('checklist') || '';
+        const rigsite = get('rigsite') || '';
+        const video = get('video') || '';
+        const status = get('status') || '';
+        const location = get('location') || '';
+        const lastInspection = get('lastInspection') || '';
+
+        // 2. البحث عن المكونات
+        const comps = [];
+        const usedKeys = new Set();
+        const compKeysLower = COMPONENT_KEYWORDS.map(k => k.toLowerCase());
+
+        for(const k of Object.keys(found)){
+            const kLower = k.toLowerCase().trim();
+            if(usedKeys.has(k)) continue;
+
+            for(const cnameLower of compKeysLower){
+                if(kLower.includes(cnameLower)){
+                    const val = String(found[k] || '').trim();
+                    if(val !== ''){
+                        // تأكد من أن هذا المفتاح ليس من مفاتيح الـ Meta الرئيسية
+                        if (!Object.values(MAPPING_KEYS).flat().includes(k)) {
+                           comps.push({name: k, value: val});
+                           usedKeys.add(k);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 3. عرض واجهة المستخدم
+        document.getElementById('loader').style.display='none';
+        document.querySelector('.main').style.display='block';
+        document.querySelector('.side').style.display='block';
+
+        document.getElementById('assetTitle').innerText = systemName + (unit ? ` (${unit})` : '');
+        const b = makeBadge(status);
+        const statusBadge = document.getElementById('statusBadge');
+        statusBadge.className = 'badge ' + b.cls;
+        statusBadge.innerText = b.txt || 'Unknown';
+
+        document.getElementById('metaUnit').innerText = unit || '--';
+        document.getElementById('metaLocation').innerText = location || '--';
+        document.getElementById('metaLast').innerText = lastInspection || '--';
+        
+        const assetPhoto = document.getElementById('assetPhoto');
+        assetPhoto.src = photo || '';
+
+        renderComponents(comps);
+        renderDetailTable(found);
+
+        // 4. إعداد وظائف الأزرار
+        
+        // تكبير الصورة الرئيسية عند النقر
+        assetPhoto.addEventListener('click', () => openModalWith(assetPhoto.src));
+
+        // فتح Checklist
+        document.getElementById('openChecklist').addEventListener('click', function(){
+            if(!checklist){
+                alert('لا يوجد رابط Checklist في الشيت');
+                return;
+            }
+            openModalWith(checklist);
         });
 
-        const btnRigSite = document.getElementById('btnRigSite');
-        btnRigSite.addEventListener('click', () => {
-          if (!rigsite) {
-            alert('⚠️ لا يوجد رابط Rig Site في البيانات');
-            return;
-          }
-          openModal(rigsite);
+        // فتح Rig Site
+        document.getElementById('openRig').addEventListener('click', function(){
+            if(!rigsite){
+                alert('لا يوجد رابط Rig Site في الشيت');
+                return;
+            }
+            openModalWith(rigsite);
         });
 
-        const btnVideo = document.getElementById('btnVideo');
-        if (video) {
-          btnVideo.style.display = 'flex';
-          btnVideo.href = video;
+        // تشغيل الفيديو
+        const videoBtn = document.getElementById('openVideo');
+        if(video){
+            videoBtn.style.display='inline-block';
+            videoBtn.href = video;
         }
 
-        const btnExternal = document.getElementById('btnExternal');
-        btnExternal.href = "https://docs.google.com/spreadsheets/d/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc";
+        // فتح الشيت بالكامل
+        // ** ملاحظة: يرجى تحديث هذا الرابط ليطابق رابط الشيت الفعلي **
+        document.getElementById('openExternal').href = "https://docs.google.com/spreadsheets/d/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/edit"; 
 
       })
-      .catch(error => {
-        console.error('Error:', error);
-        showError(error.message || 'حدث خطأ غير متوقع');
+      .catch(err => {
+        // 5. معالجة الأخطاء
+        document.getElementById('loader').style.display='none';
+        document.getElementById('error').style.display='block';
+        document.getElementById('error').innerText = 'حدث خطأ: ' + (err.message || err);
+        console.error('Error:', err);
       });
+
+    // ------------------------------------------------------------------------------------------------
+    // 🌐 معالجات أحداث الـ Modal
+    // ------------------------------------------------------------------------------------------------
+    
+    // Modal event handlers
+    document.getElementById('modal').addEventListener('click', function(e){
+      if(e.target === this) closeModal();
+    });
+    document.querySelector('.modal .close').addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
   </script>
 </body>
 </html>
