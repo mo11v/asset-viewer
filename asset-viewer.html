@@ -19,6 +19,7 @@
       --warning: #f59e0b;        /* أصفر */
       --danger: #ef4444;         /* أحمر */
       --card-bg: #ffffff;
+      --card-bg-header: #f0f4f8; /* لون جديد لخلفية الهيدر */
       --text-primary: #0f172a;
       --text-secondary: #64748b;
       --text-muted: #94a3b8;
@@ -53,36 +54,45 @@
       margin: 0 auto;
     }
 
-    /* ---------------------- Header Card - تصميم زجاجي جزئي ---------------------- */
+    /* ---------------------- Header Card - تصميم Soft UI جديد ---------------------- */
     .header-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: var(--card-bg-header); /* استخدام اللون الجديد */
+      backdrop-filter: none; /* إزالة تأثير الزجاج */
       border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-xl);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 30px; /* زيادة التباعد */
+      /* ظل Neumorphism (انبعاج خفيف) */
+      box-shadow: 8px 8px 16px rgba(0,0,0,0.1), -8px -8px 16px rgba(255,255,255,0.7); 
+      border: none; /* إزالة الحدود */
       animation: fadeIn 0.3s ease;
+      
+      /* جعل الرأس مركزاً (تعديل) */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
 
     .header-content {
       display: flex;
       align-items: center;
       gap: 20px;
+      /* للتأكد من توسط المحتوى داخل البطاقة */
+      max-width: 100%; 
     }
 
     /* التعديل ليتناسب مع صورة الشعار */
     .logo-box {
-      width: 100px; /* زيادة حجم الصندوق ليناسب الشعار */
-      height: 70px; 
-      background: white; /* تغيير الخلفية إلى الأبيض */
-      border-radius: var(--radius);
+      width: 90px; /* حجم مربع للشعار */
+      height: 90px; 
+      background: var(--card-bg-header); /* استخدام نفس خلفية الهيدر */
+      border-radius: 50%; /* لجعلها دائرة */
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 5px; /* إضافة تباعد داخلي بسيط */
-      border: 1px solid var(--border); /* حدود خفيفة */
-      box-shadow: var(--shadow-lg);
+      padding: 5px; 
+      border: none; /* إزالة الحدود */
+      /* ظل Neumorphism للشعار */
+      box-shadow: inset 5px 5px 10px rgba(0,0,0,0.1), inset -5px -5px 10px rgba(255,255,255,0.7);
       flex-shrink: 0;
       color: transparent; 
       font-size: 0;
@@ -101,7 +111,6 @@
       font-size: 14px;
       color: var(--text-secondary);
     }
-
     /* ---------------------- Loading & Error States - حالات النظام ---------------------- */
     .state-box {
       background: var(--card-bg);
@@ -111,7 +120,7 @@
       box-shadow: var(--shadow-xl);
       animation: fadeIn 0.4s ease;
     }
-
+    /* بقية الأنماط (Styles) دون تغيير... */
     .loader {
       display: inline-block;
       width: 50px;
@@ -541,7 +550,7 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .header-text h1 { font-size: 18px; }
-      .logo-box { width: 80px; height: 50px; } /* تعديل حجم الشعار في الجوال */
+      .logo-box { width: 70px; height: 70px; } /* تعديل حجم الشعار في الجوال */
       .main-panel { padding: 20px; }
       .asset-title { font-size: 20px; }
       .components-grid { grid-template-columns: 1fr; }
@@ -555,7 +564,11 @@
     <div class="header-card">
       <div class="header-content">
         <div class="logo-box">
-          <img id="headerLogo" src="https://i.imgur.com/qLh52V7.png" alt="شعار فريق الصيانة" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+          <img id="headerLogo" 
+               src="https://i.imgur.com/qLh52V7.png" 
+               alt="شعار فريق صيانة JAM" 
+               style="width: 90%; height: 90%; object-fit: contain; border-radius: 50%;"
+          >
         </div>
         <div class="header-text">
           <h1>منصة JAM Maintenance Team</h1>
@@ -563,7 +576,6 @@
         </div>
       </div>
     </div>
-
     <div id="loadingState" class="state-box">
       <div class="loader"></div>
       <div class="state-text">جارِ تحميل بيانات الجهاز من Google Sheets...</div>
@@ -640,7 +652,6 @@
       <img class="modal-image" id="modalImage" src="" alt="معاينة" />
     </div>
   </div>
-
   <script>
     // ⚠️ Configuration - يجب تحديث هذا الرابط برابط OpenSheet الصحيح لجدول البيانات الخاص بك
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
