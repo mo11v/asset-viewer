@@ -54,15 +54,14 @@
     }
 
     /* ---------------------- Header Card - تصميم زجاجي جزئي ---------------------- */
-    /* **تعديل:** زيادة الشفافية والوضوح للـ Header Card */
     .header-card {
-      background: rgba(255, 255, 255, 0.85); /* تقليل الشفافية قليلاً */
-      backdrop-filter: blur(15px); /* زيادة تأثير التغبيش */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
       padding: 24px;
       margin-bottom: 24px;
       box-shadow: var(--shadow-xl);
-      border: 1px solid rgba(255, 255, 255, 0.5); /* زيادة وضوح الحدود */
+      border: 1px solid rgba(255, 255, 255, 0.3);
       animation: fadeIn 0.3s ease;
     }
 
@@ -72,27 +71,27 @@
       gap: 20px;
     }
 
-    /* **تعديل:** ليتناسب مع صورة الشعار الجديدة */
+    /* 🌟 التعديلات على صندوق الشعار */
     .logo-box {
-      width: 120px; /* زيادة الحجم لاستيعاب شعار أكبر */
-      height: 90px; 
-      background: transparent; /* إزالة الخلفية البيضاء لدمج الشعار مع البطاقة */
+      width: 120px; /* زيادة حجم الصندوق ليناسب الشعار الجديد */
+      height: 80px; 
+      background: white; /* خلفية بيضاء للشعار */
       border-radius: var(--radius);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0; /* إزالة التباعد الداخلي */
-      border: none; /* إزالة الحدود */
-      box-shadow: none; /* إزالة الظل */
+      padding: 8px; /* زيادة التباعد الداخلي قليلاً */
+      border: 1px solid var(--border); 
+      box-shadow: var(--shadow-lg);
       flex-shrink: 0;
-      color: transparent; 
-      font-size: 0;
-      font-weight: 0;
     }
+
     .logo-box img {
-      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); /* إضافة ظل خفيف للشعار نفسه */
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* تأكد من عرض الشعار بالكامل */
     }
-    /* نهاية التعديل */
+    /* نهاية التعديلات */
 
     .header-text h1 {
       font-size: 24px;
@@ -545,7 +544,7 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .header-text h1 { font-size: 18px; }
-      .logo-box { width: 80px; height: 60px; } /* تعديل حجم الشعار في الجوال */
+      .logo-box { width: 90px; height: 60px; padding: 5px; } /* تعديل حجم الشعار في الجوال */
       .main-panel { padding: 20px; }
       .asset-title { font-size: 20px; }
       .components-grid { grid-template-columns: 1fr; }
@@ -559,7 +558,7 @@
     <div class="header-card">
       <div class="header-content">
         <div class="logo-box">
-          <img id="headerLogo" src="https://i.imgur.com/vH1N57I.png" alt="شعار فريق الصيانة" style="width: 100%; height: 100%; object-fit: contain;">
+          <img id="headerLogo" src="https://i.ibb.co/Rnvzrk2/JAM-LOGO.png" alt="شعار فريق الصيانة">
         </div>
         <div class="header-text">
           <h1>منصة JAM Maintenance Team</h1>
