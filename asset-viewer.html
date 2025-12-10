@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>عرض الأصول - Asset Viewer</title>
+  <title>منصة JAM Maintenance Team</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
@@ -71,20 +71,24 @@
       gap: 20px;
     }
 
+    /* التعديل ليتناسب مع صورة الشعار */
     .logo-box {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      width: 100px; /* زيادة حجم الصندوق ليناسب الشعار */
+      height: 70px; 
+      background: white; /* تغيير الخلفية إلى الأبيض */
       border-radius: var(--radius);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 28px;
-      font-weight: 900;
+      padding: 5px; /* إضافة تباعد داخلي بسيط */
+      border: 1px solid var(--border); /* حدود خفيفة */
       box-shadow: var(--shadow-lg);
       flex-shrink: 0;
+      color: transparent; 
+      font-size: 0;
+      font-weight: 0;
     }
+    /* نهاية التعديل */
 
     .header-text h1 {
       font-size: 24px;
@@ -461,17 +465,6 @@
       color: white;
     }
 
-    .action-btn.outline {
-      background: white;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .action-btn.outline:hover {
-      background: var(--primary);
-      color: white;
-    }
-
     /* ---------------------- Modal - النافذة المنبثقة ---------------------- */
     .modal {
       position: fixed;
@@ -548,7 +541,7 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .header-text h1 { font-size: 18px; }
-      .logo-box { width: 50px; height: 50px; font-size: 20px; }
+      .logo-box { width: 80px; height: 50px; } /* تعديل حجم الشعار في الجوال */
       .main-panel { padding: 20px; }
       .asset-title { font-size: 20px; }
       .components-grid { grid-template-columns: 1fr; }
@@ -561,10 +554,12 @@
   <div class="container">
     <div class="header-card">
       <div class="header-content">
-        <div class="logo-box">AS</div>
+        <div class="logo-box">
+          <img id="headerLogo" src="https://i.imgur.com/qLh52V7.png" alt="شعار فريق الصيانة" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+        </div>
         <div class="header-text">
-          <h1>نظام عرض حالة الأصول</h1>
-          <p>امسح QR أو افتح الرابط مباشرة مع <code dir="ltr">?id=رقم_الوحدة</code></p>
+          <h1>منصة JAM Maintenance Team</h1>
+          <p>نظام متابعة حالة المعدات وقطع الغيار</p>
         </div>
       </div>
     </div>
@@ -629,10 +624,7 @@
             <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">
               ▶️ تشغيل الفيديو
             </a>
-            <a class="action-btn outline" id="btnExternal" href="#" target="_blank">
-              🔗 فتح السجل الكامل (Sheet)
-            </a>
-          </div>
+            </div>
         </div>
       </aside>
     </div>
@@ -650,7 +642,7 @@
   </div>
 
   <script>
-    // Configuration - يرجى التأكد من أن هذا الرابط هو رابط OpenSheet الصحيح
+    // ⚠️ Configuration - يجب تحديث هذا الرابط برابط OpenSheet الصحيح لجدول البيانات الخاص بك
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
     // Get query parameters
@@ -737,7 +729,7 @@
     fetch(SHEET_JSON)
       .then(response => {
         if (!response.ok) {
-          throw new Error('فشل في جلب البيانات من Google Sheets. تأكد من إعداد رابط opensheet.elk.sh بشكل صحيح.');
+          throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
         }
         return response.json();
       })
@@ -943,10 +935,7 @@
           btnVideo.href = video;
         }
 
-        const btnExternal = document.getElementById('btnExternal');
-        // تحديث الرابط لفتح الشيت مباشرة
-        btnExternal.href = "https://docs.google.com/spreadsheets/d/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/edit";
-
+        // تم حذف الكود الخاص بـ btnExternal (فتح السجل الكامل) بناءً على طلبك
       })
       .catch(error => {
         // Handle errors
