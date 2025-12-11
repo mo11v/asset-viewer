@@ -7,24 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* ------------------------------------------------------------------------------------------------
-     * 🎨 CSS Variables & Base Styles - تصميم حديث بالكامل
-     * ------------------------------------------------------------------------------------------------ */
     :root{
-      /* الألوان الأساسية */
-      --primary: #2563eb;        /* أزرق أساسي */
+      --primary: #2563eb;
       --primary-dark: #1e40af;
       --primary-light: #3b82f6;
-      --success: #10b981;        /* أخضر */
-      --warning: #f59e0b;        /* أصفر */
-      --danger: #ef4444;         /* أحمر */
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
       --card-bg: #ffffff;
       --text-primary: #0f172a;
       --text-secondary: #64748b;
       --text-muted: #94a3b8;
       --border: #e2e8f0;
-      
-      /* الظلال والزوايا */
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
       --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
       --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
@@ -52,7 +46,6 @@
       margin: 0 auto;
     }
 
-    /* Header Card */
     .header-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -82,7 +75,6 @@
         object-fit: contain;
     }
     
-    /* Loading & Error States */
     .state-box {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -124,7 +116,6 @@
       color: var(--danger);
     }
 
-    /* Main Content Grid */
     .content-grid {
       display: grid;
       grid-template-columns: 1fr 400px;
@@ -136,13 +127,11 @@
       .content-grid {
         grid-template-columns: 1fr;
       }
-      
       .sidebar {
         order: -1;
       }
     }
 
-    /* Main Panel & Status Badge remain the same */
     .main-panel {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -200,7 +189,6 @@
       color: white;
     }
 
-    /* Meta Cards, Components Section, Details Table remain the same */
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -358,7 +346,6 @@
       text-decoration: underline;
     }
 
-    /* ---------------------- Sidebar - الشريط الجانبي ---------------------- */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -372,7 +359,7 @@
       box-shadow: var(--shadow-xl);
     }
     
-    /* ---------------------- Device Type Box (اسم النوع المطلوب) ---------------------- */
+    /* صندوق نوع الجهاز + رقم الـ Unit تحت منه */
     .device-type-box {
         padding: 0 0 16px 0;
         margin-bottom: 16px;
@@ -389,7 +376,13 @@
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    /* ------------------------------------------------------------------- */
+
+    .device-type-unit {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
 
     .asset-image-wrapper {
       position: relative;
@@ -423,7 +416,6 @@
       font-weight: 600;
     }
 
-    /* Action Buttons, Modal, Footer, Responsive remain the same */
     .actions-grid {
       display: flex;
       flex-direction: column;
@@ -606,6 +598,7 @@
         <div class="image-card">
           <div class="device-type-box" id="deviceTypeBox" style="display: none;">
             <p class="device-type-name" id="deviceTypeName">--</p>
+            <p class="device-type-unit" id="deviceTypeUnit">Unit: --</p>
           </div>
 
           <div class="asset-image-wrapper" id="imageWrapper">
@@ -625,7 +618,7 @@
             <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">
               ▶️ تشغيل الفيديو
             </a>
-            </div>
+          </div>
         </div>
       </aside>
     </div>
@@ -643,16 +636,13 @@
   </div>
 
   <script>
-    // ⚠️ Configuration - يجب تحديث هذا الرابط برابط OpenSheet الصحيح لجدول البيانات الخاص بك
+    // ⚠️ Configuration - رابط OpenSheet
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
     // Get query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
 
-    // Utility functions
-    
-    /** يسترجع قيمة حقل من الصف باستخدام مفاتيح بديلة */
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
@@ -661,25 +651,21 @@
         }
       }
       return null;
-      }
+    }
 
-    /** يصنف الحالة إلى (green, yellow, red) */
     function classifyStatus(text) {
       if (!text) return { cls: 'yellow', txt: 'غير محدد' };
       
       const t = String(text).toLowerCase().trim();
       
-      // Green - Good states
       if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) {
         return { cls: 'green', txt: text };
       }
       
-      // Red - Bad states
       if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) {
         return { cls: 'red', txt: text };
       }
       
-      // Yellow - Warning states
       if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) {
         return { cls: 'yellow', txt: text };
       }
@@ -687,7 +673,6 @@
       return { cls: 'yellow', txt: text };
     }
 
-    /** يعرض حالة الخطأ */
     function showError(message) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('mainContent').style.display = 'none';
@@ -695,7 +680,6 @@
       document.getElementById('errorMessage').textContent = message;
     }
 
-    /** يفتح النافذة المنبثقة للصورة */
     function openModal(url) {
       if (!url) return;
       const modal = document.getElementById('modal');
@@ -705,7 +689,6 @@
       document.body.style.overflow = 'hidden';
     }
 
-    /** يغلق النافذة المنبثقة */
     function closeModal() {
       const modal = document.getElementById('modal');
       modal.classList.remove('open');
@@ -715,7 +698,6 @@
       }, 300);
     }
 
-    // Modal event listeners
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === e.currentTarget) closeModal();
     });
@@ -726,7 +708,6 @@
       if (e.key === 'Escape') closeModal();
     });
 
-    // Fetch and display data
     fetch(SHEET_JSON)
       .then(response => {
         if (!response.ok) {
@@ -739,13 +720,19 @@
           throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
         }
 
-        // Find the asset
+        // 🔍 Find the asset (مقارنة id بشكل case-insensitive)
         let asset = null;
         const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
         
         if (queryId) {
+          const queryIdNorm = String(queryId).trim().toLowerCase();
           asset = rows.find(row => {
-            return idKeys.some(key => String(row[key] || '').trim() === queryId);
+            return idKeys.some(key => {
+              const cell = row[key];
+              if (cell === null || cell === undefined) return false;
+              const cellNorm = String(cell).trim().toLowerCase();
+              return cellNorm === queryIdNorm;
+            });
           });
         } else {
           asset = rows[0];
@@ -766,39 +753,50 @@
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
 
-        // ✅ استخراج اسم النوع من عمود 'Name' أو مفاتيح بديلة
+        // ✅ اسم النوع (مثلاً ATEX)
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
-
 
         // Display UI
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // Set title and status
-        document.getElementById('assetTitle').textContent = `${systemName} (${unit})`;
+        // ✅ العنوان الرئيسي: ATEX (121698)
+        const primaryName = deviceType || systemName;
+        const assetTitleEl = document.getElementById('assetTitle');
+        assetTitleEl.textContent = unit && unit !== 'غير محدد'
+          ? `${primaryName} (${unit})`
+          : primaryName;
+
+        // Status
         const statusInfo = classifyStatus(ready);
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.className = `status-badge ${statusInfo.cls}`;
         statusBadge.textContent = statusInfo.txt;
 
-        // Set meta info
+        // Meta info
         document.getElementById('metaUnit').textContent = unit;
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
-        // ✅ عرض اسم النوع الجديد فوق الصورة
+        // ✅ صندوق النوع + رقم الـ Unit تحت منه
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
+        const deviceTypeUnit = document.getElementById('deviceTypeUnit');
         
         if (deviceType) {
-            deviceTypeName.textContent = deviceType;
-            deviceTypeBox.style.display = 'block';
+          deviceTypeName.textContent = deviceType;
+          if (unit && unit !== 'غير محدد') {
+            deviceTypeUnit.textContent = `Unit: ${unit}`;
+            deviceTypeUnit.style.display = 'block';
+          } else {
+            deviceTypeUnit.style.display = 'none';
+          }
+          deviceTypeBox.style.display = 'block';
         } else {
-            deviceTypeBox.style.display = 'none';
+          deviceTypeBox.style.display = 'none';
         }
 
-
-        // Set image
+        // Image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -820,17 +818,16 @@
           });
         }
 
-        // Find components (rest of logic remains the same)
+        // Components
         const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
-        // تم تحديث قائمة المفاتيح الرئيسية لتشمل 'Name'
         const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type']; 
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
           const isComponent = componentKeys.some(comp => keyLower.includes(comp.toLowerCase()));
-          const isMainKey = mainAssetKeys.some(mk => key.toLowerCase().includes(mk.toLowerCase()));
+          const isMainKey = mainAssetKeys.some(mk => keyLower.includes(mk.toLowerCase()));
           
           if (isComponent && !isMainKey && !usedKeys.has(key)) {
             const val = asset[key];
@@ -841,7 +838,6 @@
           }
         });
 
-        // Display components
         const componentsArea = document.getElementById('componentsArea');
         componentsArea.innerHTML = '';
         
@@ -856,9 +852,9 @@
             
             const status = document.createElement('div');
             status.className = 'component-status';
-            const statusInfo = classifyStatus(comp.value);
-            status.classList.add(statusInfo.cls);
-            status.textContent = statusInfo.txt;
+            const statusI = classifyStatus(comp.value);
+            status.classList.add(statusI.cls);
+            status.textContent = statusI.txt;
             
             card.appendChild(name);
             card.appendChild(status);
@@ -868,14 +864,13 @@
           componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px 40px; color: var(--text-muted); font-style: italic;">لا توجد مكونات محددة أو تفاصيل إضافية عن المكونات.</div>';
         }
 
-        // Display details table
+        // Details table
         const detailsTable = document.getElementById('detailsTable');
         const skipKeysList = mainAssetKeys; 
         let hasDetails = false;
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
-          // تخطي إذا كان أحد المفاتيح الرئيسية أو تم إدراجه كمكون
           const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) || 
                            components.some(c => c.name === key);
           
@@ -897,7 +892,6 @@
 
           const valStr = String(val);
           
-          // Check if image
           if (valStr.match(/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)$/i)) {
             const link = document.createElement('a');
             link.href = '#';
@@ -908,7 +902,6 @@
             };
             value.appendChild(link);
           }
-          // Check if URL
           else if (valStr.startsWith('http')) {
             const link = document.createElement('a');
             link.href = valStr;
@@ -916,7 +909,6 @@
             link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
             value.appendChild(link);
           }
-          // Regular text
           else {
             value.textContent = valStr;
           }
@@ -930,7 +922,7 @@
           document.getElementById('detailsSection').style.display = 'block';
         }
 
-        // Setup action buttons
+        // Action buttons
         document.getElementById('btnChecklist').addEventListener('click', () => {
           if (!checklist) {
             alert('⚠️ لا يوجد رابط Checklist في البيانات');
@@ -955,7 +947,6 @@
 
       })
       .catch(error => {
-        // Handle errors
         console.error('Error:', error);
         showError(error.message || 'حدث خطأ غير متوقع في جلب البيانات');
       });
