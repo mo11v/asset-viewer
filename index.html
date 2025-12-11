@@ -13,6 +13,7 @@
       --card-bg: #ffffff;
       --text-primary: #0f172a;
       --text-secondary: #64748b;
+      --text-muted: #94a3b8;
       --border: #e2e8f0;
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --radius-lg: 16px;
@@ -26,6 +27,7 @@
       min-height: 100vh;
       padding: 20px;
       line-height: 1.6;
+      color: var(--text-primary);
     }
 
     .container {
@@ -37,21 +39,38 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 20px 24px 18px;
       margin-bottom: 24px;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.5);
     }
-    
-    .header-card h1 {
-        font-size: 28px;
-        color: var(--primary-dark);
-        margin-bottom: 8px;
+
+    .logo-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
-    
-    .header-card p {
-        color: var(--text-secondary);
-        font-size: 16px;
+
+    .logo-wrapper img {
+      max-width: 260px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .byline {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .header-subtitle {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
     }
 
     .asset-list {
@@ -62,7 +81,7 @@
     .asset-card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 16px 20px;
       box-shadow: var(--shadow);
       display: flex;
       justify-content: space-between;
@@ -142,20 +161,21 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       color: var(--text-secondary);
+      margin-bottom: 16px;
     }
     
     .loader {
-        border: 5px solid rgba(37, 99, 235, 0.2);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
+      border: 5px solid rgba(37, 99, 235, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
     }
     
     @keyframes spin {
-        to { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* مودال عرض الـ QR */
@@ -229,13 +249,45 @@
       word-break: break-all;
       margin-top: 6px;
     }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      color: rgba(255,255,255,0.95);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .asset-card {
+        flex-direction: row;
+        align-items: center;
+      }
+      .header-card {
+        padding: 16px;
+      }
+      .logo-wrapper img {
+        max-width: 220px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- الهيدر + اللوجو -->
     <div class="header-card">
-      <h1>قائمة الأصول والمعدات</h1>
-      <p>اختر الجهاز لعرض التفاصيل الكاملة وحالته أو إنشاء QR Code له.</p>
+      <div class="logo-wrapper">
+        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" 
+             alt="JAM Maintenance Team Logo">
+        <div class="byline">by Tarek &amp; Assem</div>
+      </div>
+      <div class="header-subtitle">
+        اختر الجهاز لعرض التفاصيل الكاملة وحالته أو إنشاء QR Code له.
+      </div>
     </div>
 
     <div id="loading" class="loader-box">
@@ -248,6 +300,11 @@
     </div>
 
     <div id="assetList" class="asset-list"></div>
+
+    <!-- فوتر / سلوغن -->
+    <div class="footer">
+      JAM Maintenance Team – Inspection • Repair • Reporting for field equipment.
+    </div>
   </div>
 
   <!-- 🧾 مودال الـ QR -->
@@ -269,7 +326,8 @@
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
     const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
-    const NAME_KEYS = ['System', 'system', 'System Name', 'Name', 'Asset Name'];
+    // هنا بنحاول نجيب اسم الجهاز من Type أو Name أو System
+    const DEVICE_KEYS = ['Type', 'type', 'Name', 'name', 'System', 'system', 'System Name', 'Asset Name'];
     const LOCATION_KEYS = ['Location', 'Site', 'location'];
 
     function safeGet(obj, keys) {
@@ -313,11 +371,12 @@
 
         rows.forEach(asset => {
           const unitId = safeGet(asset, ID_KEYS);
-          const systemName = safeGet(asset, NAME_KEYS);
+          const deviceName = safeGet(asset, DEVICE_KEYS) || 'جهاز';
           const location = safeGet(asset, LOCATION_KEYS);
 
-          if (unitId && systemName) {
-            const displayTitle = `${systemName} (${unitId})`;
+          if (unitId && deviceName) {
+            // 👈 الشكل: ATEX (121696)
+            const displayTitle = `${deviceName} (${unitId})`;
             const assetUrl = buildAssetUrl(unitId);
 
             const card = document.createElement('a');
