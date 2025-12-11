@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>منصة JAM Maintenance Team</title>
+  <title>JAM Maintenance Team Viewer</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
@@ -53,8 +53,9 @@
       margin: 0 auto;
     }
 
-    /* ---------------------- Header Card - تصميم زجاجي جزئي ---------------------- */
+    /* ---------------------- Header Card - تصميم الشعار المدمج الجديد ---------------------- */
     .header-card {
+      /* الحفاظ على التأثير الزجاجي والإطار */
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
@@ -63,48 +64,29 @@
       box-shadow: var(--shadow-xl);
       border: 1px solid rgba(255, 255, 255, 0.3);
       animation: fadeIn 0.3s ease;
-    }
-
-    .header-content {
+      
+      /* توسيط الشعار المدمج في المنتصف */
       display: flex;
+      justify-content: center; 
       align-items: center;
-      gap: 20px;
+      min-height: 120px; 
     }
 
-    /* 🌟 التعديلات على صندوق الشعار */
-    .logo-box {
-      width: 120px; /* زيادة حجم الصندوق ليناسب الشعار الجديد */
-      height: 80px; 
-      background: white; /* خلفية بيضاء للشعار */
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px; /* زيادة التباعد الداخلي قليلاً */
-      border: 1px solid var(--border); 
-      box-shadow: var(--shadow-lg);
-      flex-shrink: 0;
-    }
-
-    .logo-box img {
+    /* الكلاس الجديد لصورة الشعار المدمجة */
+    .combined-logo-wrapper {
         width: 100%;
-        height: 100%;
-        object-fit: contain; /* تأكد من عرض الشعار بالكامل */
-    }
-    /* نهاية التعديلات */
-
-    .header-text h1 {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin-bottom: 4px;
+        max-width: 550px; /* ✅ تم التكبير إلى 550px ✅ */
+        height: auto;
+        display: flex;
+        justify-content: center;
     }
 
-    .header-text p {
-      font-size: 14px;
-      color: var(--text-secondary);
+    .combined-logo-wrapper img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
     }
-
+    
     /* ---------------------- Loading & Error States - حالات النظام ---------------------- */
     .state-box {
       background: var(--card-bg);
@@ -542,9 +524,13 @@
     /* Responsive */
     @media (max-width: 768px) {
       body { padding: 12px; }
-      .header-card { padding: 16px; }
-      .header-text h1 { font-size: 18px; }
-      .logo-box { width: 90px; height: 60px; padding: 5px; } /* تعديل حجم الشعار في الجوال */
+      .header-card { 
+        padding: 16px; 
+        min-height: 100px;
+      }
+      .combined-logo-wrapper {
+        max-width: 90%;
+      }
       .main-panel { padding: 20px; }
       .asset-title { font-size: 20px; }
       .components-grid { grid-template-columns: 1fr; }
@@ -556,14 +542,8 @@
 <body>
   <div class="container">
     <div class="header-card">
-      <div class="header-content">
-        <div class="logo-box">
-          <img id="headerLogo" src="https://i.ibb.co/Rnvzrk2/JAM-LOGO.png" alt="شعار فريق الصيانة">
-        </div>
-        <div class="header-text">
-          <h1>منصة JAM Maintenance Team</h1>
-          <p>نظام متابعة حالة المعدات وقطع الغيار</p>
-        </div>
+      <div class="combined-logo-wrapper">
+        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="شعار Premiere Casing Services و JAM Maintenance Team">
       </div>
     </div>
 
@@ -633,7 +613,7 @@
     </div>
 
     <div class="footer">
-      النظام يقرأ البيانات مباشرة من Google Sheets — عدّل الشيت لتحديث المحتوى فورًا
+      JAM Inspection System for JAM devices monitoring & tracking. Developed by JAM Maintenance Team.
     </div>
   </div>
 
@@ -663,7 +643,7 @@
         }
       }
       return null;
-    }
+      }
 
     /** يصنف الحالة إلى (green, yellow, red) */
     function classifyStatus(text) {
@@ -938,7 +918,6 @@
           btnVideo.href = video;
         }
 
-        // تم حذف الكود الخاص بـ btnExternal (فتح السجل الكامل) بناءً على طلبك
       })
       .catch(error => {
         // Handle errors
