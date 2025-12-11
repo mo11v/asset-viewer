@@ -71,11 +71,17 @@
       color: var(--text-primary);
       transition: all 0.2s ease;
       border-right: 8px solid var(--primary);
+      position: relative;
     }
 
     .asset-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+
+    .asset-info {
+      flex: 1;
+      margin-left: 10px;
     }
 
     .asset-info h3 {
@@ -97,6 +103,36 @@
       font-weight: 700;
       font-size: 16px;
       flex-shrink: 0;
+    }
+
+    /* زر الـ QR */
+    .qr-btn {
+      margin-right: 10px;
+      border: none;
+      outline: none;
+      background: #e5edff;
+      color: var(--primary-dark);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .qr-btn span {
+      font-size: 16px;
+    }
+
+    .qr-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .loader-box, .error-box {
@@ -121,13 +157,85 @@
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+
+    /* مودال عرض الـ QR */
+    .qr-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .qr-modal.open {
+      display: flex;
+    }
+
+    .qr-modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px 24px 24px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    .qr-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .qr-modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .qr-modal-close {
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .qr-modal-close:hover {
+      color: var(--primary-dark);
+    }
+
+    .qr-image-wrapper {
+      margin: 10px 0 12px;
+    }
+
+    .qr-image-wrapper img {
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .qr-link {
+      font-size: 12px;
+      color: var(--text-secondary);
+      direction: ltr;
+      text-align: left;
+      word-break: break-all;
+      margin-top: 6px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header-card">
       <h1>قائمة الأصول والمعدات</h1>
-      <p>اختر الجهاز لعرض التفاصيل الكاملة وحالته.</p>
+      <p>اختر الجهاز لعرض التفاصيل الكاملة وحالته أو إنشاء QR Code له.</p>
     </div>
 
     <div id="loading" class="loader-box">
@@ -142,11 +250,24 @@
     <div id="assetList" class="asset-list"></div>
   </div>
 
+  <!-- 🧾 مودال الـ QR -->
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <div class="qr-modal-header">
+        <div class="qr-modal-title">QR Code للجهاز</div>
+        <button class="qr-modal-close" id="qrCloseBtn">&times;</button>
+      </div>
+      <div class="qr-image-wrapper">
+        <img id="qrImage" src="" alt="QR Code" />
+      </div>
+      <div class="qr-link" id="qrLinkText"></div>
+    </div>
+  </div>
+
   <script>
-    // ⚠️ تأكد من أن هذا الرابط هو رابط OpenSheet الصحيح الذي يعمل لديك!
+    // رابط OpenSheet
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
-    // المفاتيح المتوقعة في جدول البيانات
     const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
     const NAME_KEYS = ['System', 'system', 'System Name', 'Name', 'Asset Name'];
     const LOCATION_KEYS = ['Location', 'Site', 'location'];
@@ -162,11 +283,18 @@
     }
 
     function displayError(message) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('error-message').textContent = message;
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
     }
 
+    // بناء رابط صفحة الجهاز بالنسبة لمكان index.html
+    function buildAssetUrl(unitId) {
+      const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+      return basePath + 'asset-viewer.html?id=' + encodeURIComponent(unitId);
+    }
+
+    // تحميل الأجهزة
     fetch(SHEET_JSON)
       .then(response => {
         if (!response.ok) {
@@ -189,12 +317,11 @@
           const location = safeGet(asset, LOCATION_KEYS);
 
           if (unitId && systemName) {
-            // 👈 العنوان بالشكل: ATEX (121698)
             const displayTitle = `${systemName} (${unitId})`;
+            const assetUrl = buildAssetUrl(unitId);
 
             const card = document.createElement('a');
-            // صفحة التفاصيل
-            card.href = `asset-viewer.html?id=${encodeURIComponent(unitId)}`; 
+            card.href = assetUrl;
             card.className = 'asset-card';
 
             card.innerHTML = `
@@ -202,7 +329,12 @@
                 <h3>${displayTitle}</h3>
                 <p>الموقع: ${location || 'غير محدد'}</p>
               </div>
-              <div class="unit-id">${unitId}</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="qr-btn" type="button" data-url="${assetUrl}">
+                  <span>🔳</span> QR
+                </button>
+                <div class="unit-id">${unitId}</div>
+              </div>
             `;
 
             assetListContainer.appendChild(card);
@@ -213,6 +345,52 @@
         console.error('Error:', error);
         displayError(error.message);
       });
+
+    // منطق المودال (فتح / غلق) و تحميل صورة الـ QR
+    const qrModal = document.getElementById('qrModal');
+    const qrImage = document.getElementById('qrImage');
+    const qrLinkText = document.getElementById('qrLinkText');
+    const qrCloseBtn = document.getElementById('qrCloseBtn');
+
+    // event delegation للأزرار
+    document.addEventListener('click', function (e) {
+      const qrBtn = e.target.closest('.qr-btn');
+      if (!qrBtn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const url = qrBtn.dataset.url;
+      if (!url) return;
+
+      const encoded = encodeURIComponent(url);
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}`;
+
+      qrImage.src = qrApi;
+      qrLinkText.textContent = url;
+
+      qrModal.classList.add('open');
+    });
+
+    function closeQrModal() {
+      qrModal.classList.remove('open');
+      qrImage.src = '';
+      qrLinkText.textContent = '';
+    }
+
+    qrCloseBtn.addEventListener('click', closeQrModal);
+
+    qrModal.addEventListener('click', function (e) {
+      if (e.target === qrModal) {
+        closeQrModal();
+      }
+    });
+
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeQrModal();
+      }
+    });
   </script>
 </body>
 </html>
