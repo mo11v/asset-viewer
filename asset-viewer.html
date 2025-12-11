@@ -7,23 +7,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* (All existing CSS styles remain the same, including the modern layout, colors, and responsive design) */
-    
     /* ------------------------------------------------------------------------------------------------
-     * 🎨 CSS Variables & Base Styles 
+     * 🎨 CSS Variables & Base Styles - التصميم الأصلي الذي يعمل
      * ------------------------------------------------------------------------------------------------ */
     :root{
-      --primary: #2563eb;        
+      /* الألوان الأساسية */
+      --primary: #2563eb;        /* أزرق أساسي */
       --primary-dark: #1e40af;
       --primary-light: #3b82f6;
-      --success: #10b981;        
-      --warning: #f59e0b;        
-      --danger: #ef4444;         
+      --success: #10b981;        /* أخضر */
+      --warning: #f59e0b;        /* أصفر */
+      --danger: #ef4444;         /* أحمر */
       --card-bg: #ffffff;
       --text-primary: #0f172a;
       --text-secondary: #64748b;
       --text-muted: #94a3b8;
       --border: #e2e8f0;
+      
+      /* الظلال والزوايا */
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
       --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
       --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
@@ -43,39 +44,26 @@
     }
 
     .container { max-width: 1200px; margin: 0 auto; }
-
-    .header-card { 
-      background: rgba(255, 255, 255, 0.95);
-      /* ... other styles ... */
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-xl);
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      min-height: 120px; 
-    }
-    
-    .combined-logo-wrapper { width: 100%; max-width: 550px; height: auto; display: flex; justify-content: center; }
-    .combined-logo-wrapper img { width: 100%; height: auto; object-fit: contain; }
-
+    .header-card { /* ... styles ... */ }
+    .combined-logo-wrapper { /* ... styles ... */ }
+    .combined-logo-wrapper img { /* ... styles ... */ }
     .state-box { /* ... styles ... */ }
     .loader { /* ... styles ... */ }
     @keyframes spin { /* ... styles ... */ }
+    .state-text { /* ... styles ... }
+    .error-icon { /* ... styles ... */ }
 
     .content-grid { /* ... styles ... */ }
     @media (max-width: 1024px) { /* ... styles ... */ }
 
     .main-panel { /* ... styles ... */ }
-
     .asset-header { /* ... styles ... */ }
 
-    /* ✅ العنوان الرئيسي (Name + Unit) */
+    /* ✅ العنوان الرئيسي - سنعدل في JS ليصبح Name (Unit) */
     .asset-title {
       font-size: 28px;
       font-weight: 900;
-      color: var(--primary-dark);
+      color: var(--text-primary);
       flex: 1;
       min-width: 200px;
     }
@@ -91,7 +79,7 @@
     .meta-card:hover { /* ... styles ... */ }
     .meta-label { /* ... styles ... */ }
     .meta-value { /* ... styles ... */ }
-    
+
     .section-title { /* ... styles ... */ }
     .section-title::before { /* ... styles ... */ }
 
@@ -113,13 +101,13 @@
     .detail-value a { /* ... styles ... */ }
     .detail-value a:hover { /* ... styles ... */ }
 
+    /* ---------------------- Sidebar - الشريط الجانبي ---------------------- */
     .sidebar { display: flex; flex-direction: column; gap: 20px; }
     .image-card, .actions-card { /* ... styles ... */ }
     
-    /* ---------------------- Device Units Box (Removed/Simplified) ---------------------- */
-    /* تم إزالة الستايلات الخاصة بـ device-units-box حيث لن نحتاجها */
-    /* ------------------------------------------------------------------- */
-
+    /* ---------------------- Device Type Box (تم إزالته من الـ HTML) ---------------------- */
+    /* ... لا حاجة لـ device-type-box CSS بعد الآن ... */
+    
     .asset-image-wrapper { /* ... styles ... */ }
     .asset-image-wrapper:hover { /* ... styles ... */ }
     .asset-image { /* ... styles ... */ }
@@ -164,7 +152,7 @@
     <div id="mainContent" class="content-grid" style="display: none;">
       <div class="main-panel">
         <div class="asset-header">
-          <h2 class="asset-title" id="assetTitle">--</h2> 
+          <h2 class="asset-title" id="assetTitle">--</h2>
           <div class="status-badge green" id="statusBadge">--</div>
         </div>
 
@@ -233,6 +221,8 @@
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
 
     // Utility functions
+    
+    /** يسترجع قيمة حقل من الصف باستخدام مفاتيح بديلة */
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
@@ -241,35 +231,67 @@
         }
       }
       return null;
-    }
+      }
 
+    /** يصنف الحالة إلى (green, yellow, red) */
     function classifyStatus(text) {
-      // (دالة تصنيف الحالة لم تتغير)
       if (!text) return { cls: 'yellow', txt: 'غير محدد' };
+      
       const t = String(text).toLowerCase().trim();
-      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i)) {
+      
+      // Green - Good states
+      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) {
         return { cls: 'green', txt: text };
       }
-      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i)) {
+      
+      // Red - Bad states
+      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) {
         return { cls: 'red', txt: text };
       }
+      
+      // Yellow - Warning states
+      if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) {
+        return { cls: 'yellow', txt: text };
+      }
+      
       return { cls: 'yellow', txt: text };
     }
 
+    /** يعرض حالة الخطأ */
     function showError(message) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('errorState').style.display = 'flex';
       document.getElementById('errorMessage').textContent = message;
     }
-    
-    function openModal(url) { /* ... implementation ... */ }
-    function closeModal() { /* ... implementation ... */ }
 
+    /** يفتح النافذة المنبثقة للصورة */
+    function openModal(url) {
+      if (!url) return;
+      const modal = document.getElementById('modal');
+      const img = document.getElementById('modalImage');
+      img.src = url;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    /** يغلق النافذة المنبثقة */
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        document.getElementById('modalImage').src = '';
+      }, 300);
+    }
+
+    // Modal event listeners
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === e.currentTarget) closeModal();
     });
+
     document.getElementById('modalClose').addEventListener('click', closeModal);
+
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeModal();
     });
@@ -278,7 +300,7 @@
     fetch(SHEET_JSON)
       .then(response => {
         if (!response.ok) {
-          throw new Error('فشل الاتصال بخدمة Google Sheets.');
+          throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
         }
         return response.json();
       })
@@ -289,7 +311,7 @@
 
         // Find the asset
         let asset = null;
-        const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'ID', 'id'];
+        const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
         
         if (queryId) {
           asset = rows.find(row => {
@@ -300,39 +322,42 @@
         }
 
         if (!asset) {
-          throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}.`);
+          throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}. يرجى التحقق من الرابط أو الشيت.`);
         }
 
         // Extract data
         const unit = safeGet(asset, idKeys) || 'غير محدد';
-        // ✅ استخراج اسم النوع الرئيسي (Name)
+        // ✅ المفتاح الجديد لاسم النوع (ATEX) - يجب أن يكون موجوداً في عمود 'Name' أو 'Type' في الشيت
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']) || 'جهاز'; 
         
-        const photo = safeGet(asset, ['ImageURL', 'Image', 'Photo', 'image']);
-        const checklist = safeGet(asset, ['Checklist', 'ChecklistURL']);
-        const rigsite = safeGet(asset, ['RigSite', 'RigSiteURL']);
-        const video = safeGet(asset, ['VideoLink', 'VideoURL']);
-        const ready = safeGet(asset, ['Ready', 'Status', 'status']) || 'غير محدد';
+        const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Asset Name']) || 'جهاز'; 
+        const photo = safeGet(asset, ['ImageURL', 'Image Url', 'Image', 'Photo', 'image']);
+        const checklist = safeGet(asset, ['Checklist', 'ChecklistURL', 'Checklist URL', 'Checklist Image']);
+        const rigsite = safeGet(asset, ['RigSite', 'Rig Site', 'RigSiteURL', 'Rig Site Image']);
+        const video = safeGet(asset, ['VideoLink', 'Video Link', 'Video', 'video', 'VideoURL']);
+        const ready = safeGet(asset, ['Ready', 'Status', 'State', 'status']) || 'غير محدد';
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
-        const lastCheck = safeGet(asset, ['LastInspection', 'Last Check']) || 'غير محدد';
+        const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
 
         // Display UI
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ تعيين العنوان الرئيسي: [Name] (Unit ID)
-        document.getElementById('assetTitle').textContent = `${deviceType} (${unit})`;
+        // ✅ التعديل الرئيسي: دمج اسم النوع (deviceType) مع رقم الوحدة (unit) في العنوان
+        // إذا كان deviceType موجوداً، نستخدمه، وإلا نستخدم systemName كخيار احتياطي
+        const finalTitleName = (deviceType !== 'جهاز' && deviceType !== unit && deviceType !== systemName) ? deviceType : systemName;
+        document.getElementById('assetTitle').textContent = `${finalTitleName} (${unit})`;
         
         const statusInfo = classifyStatus(ready);
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.className = `status-badge ${statusInfo.cls}`;
         statusBadge.textContent = statusInfo.txt;
 
-        // Set meta info
+        // Set meta info (بدون رقم الوحدة)
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
-        // Set image (لم تتغير)
+        // Set image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -354,12 +379,12 @@
           });
         }
 
-        // Find components and Details Table (لم تتغير، وتستثني فقط Name و Unit)
-        const componentKeys = ['Loadcell', 'Encoder', 'DumpValve', 'Controller', 'PowerSupply', 'Cables', 'Valve', 'Sensor', 'Pump'];
+        // Find components 
+        const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
-        // مفاتيح رئيسية يجب تخطيها
-        const mainAssetKeys = ['Unit', 'Name', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Type']; 
+        // مفاتيح رئيسية يجب تخطيها (تم إدراج 'Name' و 'Type')
+        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type', 'Asset Name', 'System Name', 'system']; 
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
@@ -383,7 +408,7 @@
           components.forEach(comp => {
             const card = document.createElement('div');
             card.className = 'component-card';
-            // ... (باقي كود عرض المكونات)
+            // ... (rest of component display logic)
             const name = document.createElement('div');
             name.className = 'component-name';
             name.textContent = comp.name;
@@ -409,6 +434,7 @@
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
+          // تخطي إذا كان أحد المفاتيح الرئيسية أو تم إدراجه كمكون
           const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) || 
                            components.some(c => c.name === key);
           
@@ -418,7 +444,6 @@
           if (!val || String(val).trim() === '') return;
 
           hasDetails = true;
-          // ... (باقي كود عرض التفاصيل)
           const row = document.createElement('div');
           row.className = 'detail-row';
 
@@ -436,7 +461,10 @@
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
-            link.onclick = (e) => { e.preventDefault(); openModal(valStr); };
+            link.onclick = (e) => {
+              e.preventDefault();
+              openModal(valStr);
+            };
             value.appendChild(link);
           }
           // Check if URL
@@ -461,13 +489,32 @@
           document.getElementById('detailsSection').style.display = 'block';
         }
 
-        // Setup action buttons (لم تتغير)
-        document.getElementById('btnChecklist').addEventListener('click', () => { /* ... */ });
-        document.getElementById('btnRigSite').addEventListener('click', () => { /* ... */ });
+        // Setup action buttons
+        document.getElementById('btnChecklist').addEventListener('click', () => {
+          if (!checklist) {
+            alert('⚠️ لا يوجد رابط Checklist في البيانات');
+            return;
+          }
+          openModal(checklist);
+        });
+
+        document.getElementById('btnRigSite').addEventListener('click', () => {
+          if (!rigsite) {
+            alert('⚠️ لا يوجد رابط Rig Site في البيانات');
+            return;
+          }
+          openModal(rigsite);
+        });
+
         const btnVideo = document.getElementById('btnVideo');
-        if (video) { btnVideo.style.display = 'flex'; btnVideo.href = video; }
+        if (video) {
+          btnVideo.style.display = 'flex';
+          btnVideo.href = video;
+        }
+
       })
       .catch(error => {
+        // Handle errors
         console.error('Error:', error);
         showError(error.message || 'حدث خطأ غير متوقع في جلب البيانات');
       });
