@@ -8,7 +8,7 @@
   
   <style>
     /* ------------------------------------------------------------------------------------------------
-     * 🎨 CSS Variables & Base Styles - التصميم الأصلي الذي يعمل
+     * 🎨 CSS Variables & Base Styles - تصميم حديث بالكامل
      * ------------------------------------------------------------------------------------------------ */
     :root{
       /* الألوان الأساسية */
@@ -32,7 +32,11 @@
       --radius-lg: 16px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -43,23 +47,120 @@
       line-height: 1.6;
     }
 
-    .container { max-width: 1200px; margin: 0 auto; }
-    .header-card { /* ... styles ... */ }
-    .combined-logo-wrapper { /* ... styles ... */ }
-    .combined-logo-wrapper img { /* ... styles ... */ }
-    .state-box { /* ... styles ... */ }
-    .loader { /* ... styles ... */ }
-    @keyframes spin { /* ... styles ... */ }
-    .state-text { /* ... styles ... }
-    .error-icon { /* ... styles ... */ }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-    .content-grid { /* ... styles ... */ }
-    @media (max-width: 1024px) { /* ... styles ... */ }
+    /* Header Card */
+    .header-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: fadeIn 0.3s ease;
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      min-height: 120px; 
+    }
 
-    .main-panel { /* ... styles ... */ }
-    .asset-header { /* ... styles ... */ }
+    .combined-logo-wrapper {
+        width: 100%;
+        max-width: 550px; 
+        height: auto;
+        display: flex;
+        justify-content: center;
+    }
 
-    /* ✅ العنوان الرئيسي - سنعدل في JS ليصبح Name (Unit) */
+    .combined-logo-wrapper img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    
+    /* Loading & Error States */
+    .state-box {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 60px 30px;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+      animation: fadeIn 0.4s ease;
+      display: flex; 
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(37, 99, 235, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .state-text {
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      color: var(--danger);
+    }
+
+    /* Main Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 24px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        order: -1;
+      }
+    }
+
+    /* Main Panel & Status Badge remain the same */
+    .main-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .asset-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+
     .asset-title {
       font-size: 28px;
       font-weight: 900;
@@ -68,67 +169,388 @@
       min-width: 200px;
     }
 
-    .status-badge { /* ... styles ... */ }
-    @keyframes pulse { /* ... styles ... */ }
-    .status-badge.green { /* ... styles ... */ }
-    .status-badge.yellow { /* ... styles ... */ }
-    .status-badge.red { /* ... styles ... */ }
+    .status-badge {
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: var(--shadow);
+      animation: pulse 2s ease-in-out infinite;
+    }
 
-    .meta-grid { /* ... styles ... */ }
-    .meta-card { /* ... styles ... */ }
-    .meta-card:hover { /* ... styles ... */ }
-    .meta-label { /* ... styles ... */ }
-    .meta-value { /* ... styles ... */ }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
 
-    .section-title { /* ... styles ... */ }
-    .section-title::before { /* ... styles ... */ }
+    .status-badge.green {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
 
-    .components-grid { /* ... styles ... */ }
-    .component-card { /* ... styles ... */ }
-    .component-card:hover { /* ... styles ... */ }
-    .component-name { /* ... styles ... */ }
-    .component-status { /* ... styles ... */ }
-    .component-status.green { /* ... styles ... */ }
-    .component-status.yellow { /* ... styles ... */ }
-    .component-status.red { /* ... styles ... */ }
+    .status-badge.yellow {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
 
-    .details-table { /* ... styles ... */ }
-    .detail-row { /* ... styles ... */ }
-    .detail-row:last-child { /* ... styles ... */ }
-    .detail-row:hover { /* ... styles ... */ }
-    .detail-label { /* ... styles ... */ }
-    .detail-value { /* ... styles ... */ }
-    .detail-value a { /* ... styles ... */ }
-    .detail-value a:hover { /* ... styles ... */ }
+    .status-badge.red {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    /* Meta Cards, Components Section, Details Table remain the same */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .meta-card {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .meta-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .meta-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .meta-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      border-radius: 2px;
+    }
+
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .component-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .component-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+      transform: translateX(-4px);
+    }
+
+    .component-name {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 15px;
+    }
+
+    .component-status {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .component-status.green {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .component-status.yellow {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .component-status.red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .details-table {
+      background: #f8fafc;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-row:hover {
+      background: white;
+    }
+
+    .detail-label {
+      width: 200px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      flex: 1;
+      color: var(--text-primary);
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .detail-value a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+
+    .detail-value a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
 
     /* ---------------------- Sidebar - الشريط الجانبي ---------------------- */
-    .sidebar { display: flex; flex-direction: column; gap: 20px; }
-    .image-card, .actions-card { /* ... styles ... */ }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .image-card, .actions-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-xl);
+    }
     
-    /* ---------------------- Device Type Box (تم إزالته من الـ HTML) ---------------------- */
-    /* ... لا حاجة لـ device-type-box CSS بعد الآن ... */
-    
-    .asset-image-wrapper { /* ... styles ... */ }
-    .asset-image-wrapper:hover { /* ... styles ... */ }
-    .asset-image { /* ... styles ... */ }
-    .image-placeholder { /* ... styles ... */ }
+    /* ---------------------- Device Type Box (اسم النوع المطلوب) ---------------------- */
+    .device-type-box {
+        padding: 0 0 16px 0;
+        margin-bottom: 16px;
+        border-bottom: 2px solid var(--primary-light);
+        text-align: center;
+    }
 
-    .actions-grid { /* ... styles ... */ }
-    .action-btn { /* ... styles ... */ }
-    .action-btn:hover:not(:disabled) { /* ... styles ... */ }
-    .action-btn.primary { /* ... styles ... */ }
-    .action-btn.success { /* ... styles ... */ }
-    .action-btn.danger { /* ... styles ... */ }
+    .device-type-name {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--primary-dark);
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    /* ------------------------------------------------------------------- */
 
-    .modal { /* ... styles ... */ }
-    .modal.open { /* ... styles ... */ }
-    @keyframes slideUp { /* ... styles ... */ }
-    .modal-close { /* ... styles ... */ }
-    .modal-image { /* ... styles ... */ }
+    .asset-image-wrapper {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
 
-    .footer { /* ... styles ... */ }
+    .asset-image-wrapper:hover {
+      transform: scale(1.02);
+    }
 
-    @media (max-width: 768px) { /* ... styles ... */ }
+    .asset-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Action Buttons, Modal, Footer, Responsive remain the same */
+    .actions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      border: none;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .action-btn.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .action-btn.danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      max-width: 1200px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      align-self: flex-end;
+      background: white;
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.2s ease;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+    }
+
+    .modal-image {
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      background: white;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header-card { 
+        padding: 16px; 
+        min-height: 100px;
+      }
+      .combined-logo-wrapper {
+        max-width: 90%;
+      }
+      .main-panel { padding: 20px; }
+      .asset-title { font-size: 20px; }
+      .components-grid { grid-template-columns: 1fr; }
+      .detail-row { flex-direction: column; gap: 8px; }
+      .detail-label { width: 100%; }
+      .device-type-name { font-size: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -158,6 +580,10 @@
 
         <div class="meta-grid">
           <div class="meta-card">
+            <div class="meta-label">رقم الوحدة</div>
+            <div class="meta-value" id="metaUnit">--</div>
+          </div>
+          <div class="meta-card">
             <div class="meta-label">الموقع</div>
             <div class="meta-value" id="metaLocation">--</div>
           </div>
@@ -178,6 +604,10 @@
 
       <aside class="sidebar">
         <div class="image-card">
+          <div class="device-type-box" id="deviceTypeBox" style="display: none;">
+            <p class="device-type-name" id="deviceTypeName">--</p>
+          </div>
+
           <div class="asset-image-wrapper" id="imageWrapper">
             <img class="asset-image" id="assetImage" src="" alt="صورة الجهاز" style="display: none;" />
             <div class="image-placeholder" id="imagePlaceholder">لا توجد صورة</div>
@@ -327,10 +757,7 @@
 
         // Extract data
         const unit = safeGet(asset, idKeys) || 'غير محدد';
-        // ✅ المفتاح الجديد لاسم النوع (ATEX) - يجب أن يكون موجوداً في عمود 'Name' أو 'Type' في الشيت
-        const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']) || 'جهاز'; 
-        
-        const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Asset Name']) || 'جهاز'; 
+        const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Name', 'Asset Name']) || 'جهاز';
         const photo = safeGet(asset, ['ImageURL', 'Image Url', 'Image', 'Photo', 'image']);
         const checklist = safeGet(asset, ['Checklist', 'ChecklistURL', 'Checklist URL', 'Checklist Image']);
         const rigsite = safeGet(asset, ['RigSite', 'Rig Site', 'RigSiteURL', 'Rig Site Image']);
@@ -339,24 +766,38 @@
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
 
+        // ✅ استخراج اسم النوع من عمود 'Name' أو مفاتيح بديلة
+        const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
+
+
         // Display UI
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ التعديل الرئيسي: دمج اسم النوع (deviceType) مع رقم الوحدة (unit) في العنوان
-        // إذا كان deviceType موجوداً، نستخدمه، وإلا نستخدم systemName كخيار احتياطي
-        const finalTitleName = (deviceType !== 'جهاز' && deviceType !== unit && deviceType !== systemName) ? deviceType : systemName;
-        document.getElementById('assetTitle').textContent = `${finalTitleName} (${unit})`;
-        
+        // Set title and status
+        document.getElementById('assetTitle').textContent = `${systemName} (${unit})`;
         const statusInfo = classifyStatus(ready);
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.className = `status-badge ${statusInfo.cls}`;
         statusBadge.textContent = statusInfo.txt;
 
-        // Set meta info (بدون رقم الوحدة)
+        // Set meta info
+        document.getElementById('metaUnit').textContent = unit;
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
+        // ✅ عرض اسم النوع الجديد فوق الصورة
+        const deviceTypeBox = document.getElementById('deviceTypeBox');
+        const deviceTypeName = document.getElementById('deviceTypeName');
+        
+        if (deviceType) {
+            deviceTypeName.textContent = deviceType;
+            deviceTypeBox.style.display = 'block';
+        } else {
+            deviceTypeBox.style.display = 'none';
+        }
+
+
         // Set image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
@@ -379,12 +820,12 @@
           });
         }
 
-        // Find components 
+        // Find components (rest of logic remains the same)
         const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
-        // مفاتيح رئيسية يجب تخطيها (تم إدراج 'Name' و 'Type')
-        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type', 'Asset Name', 'System Name', 'system']; 
+        // تم تحديث قائمة المفاتيح الرئيسية لتشمل 'Name'
+        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type']; 
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
@@ -408,7 +849,7 @@
           components.forEach(comp => {
             const card = document.createElement('div');
             card.className = 'component-card';
-            // ... (rest of component display logic)
+            
             const name = document.createElement('div');
             name.className = 'component-name';
             name.textContent = comp.name;
