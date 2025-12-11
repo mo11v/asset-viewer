@@ -7,7 +7,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* (CSS Variables and Base Styles remain the same) */
+    /* ------------------------------------------------------------------------------------------------
+     * 🎨 CSS Variables & Base Styles - تصميم حديث بالكامل
+     * ------------------------------------------------------------------------------------------------ */
     :root{
       /* الألوان الأساسية */
       --primary: #2563eb;        /* أزرق أساسي */
@@ -68,7 +70,7 @@
 
     .combined-logo-wrapper {
         width: 100%;
-        max-width: 550px; /* تم الإبقاء على 550px */
+        max-width: 550px; 
         height: auto;
         display: flex;
         justify-content: center;
@@ -88,7 +90,7 @@
       text-align: center;
       box-shadow: var(--shadow-xl);
       animation: fadeIn 0.4s ease;
-      display: flex; /* ليتوسط المحتوى الرأسي */
+      display: flex; 
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -370,25 +372,22 @@
       box-shadow: var(--shadow-xl);
     }
     
-    /* ---------------------- New: Device Names Box ---------------------- */
-    .device-names-box {
-        padding: 12px 0 16px 0;
+    /* ---------------------- Device Type Box (اسم النوع المطلوب) ---------------------- */
+    .device-type-box {
+        padding: 0 0 16px 0;
         margin-bottom: 16px;
-        border-bottom: 1px dashed var(--border);
+        border-bottom: 2px solid var(--primary-light);
+        text-align: center;
     }
 
-    .device-name-item {
-        font-size: 15px;
-        font-weight: 700;
+    .device-type-name {
+        font-size: 24px;
+        font-weight: 900;
         color: var(--primary-dark);
-        margin-bottom: 6px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .device-name-item::before {
-        content: '⚙️';
-        font-size: 14px;
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     /* ------------------------------------------------------------------- */
 
@@ -550,6 +549,7 @@
       .components-grid { grid-template-columns: 1fr; }
       .detail-row { flex-direction: column; gap: 8px; }
       .detail-label { width: 100%; }
+      .device-type-name { font-size: 20px; }
     }
   </style>
 </head>
@@ -604,8 +604,9 @@
 
       <aside class="sidebar">
         <div class="image-card">
-          <div class="device-names-box" id="deviceNamesBox">
-            </div>
+          <div class="device-type-box" id="deviceTypeBox" style="display: none;">
+            <p class="device-type-name" id="deviceTypeName">--</p>
+          </div>
 
           <div class="asset-image-wrapper" id="imageWrapper">
             <img class="asset-image" id="assetImage" src="" alt="صورة الجهاز" style="display: none;" />
@@ -765,10 +766,9 @@
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
 
-        // ✅ استخراج أسماء الأجهزة الجديدة
-        const wincatt = safeGet(asset, ['Wincatt Name', 'Wincatt', 'WINCATT']);
-        const mtt = safeGet(asset, ['MTT Name', 'MTT']);
-        const atex = safeGet(asset, ['Atex Name', 'Atex', 'ATEX']);
+        // ✅ استخراج اسم النوع من عمود 'Name' أو مفاتيح بديلة
+        const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
+
 
         // Display UI
         document.getElementById('loadingState').style.display = 'none';
@@ -786,28 +786,15 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
-        // ✅ عرض أسماء الأجهزة الجديدة
-        const deviceNamesBox = document.getElementById('deviceNamesBox');
-        deviceNamesBox.innerHTML = '';
-        const devices = [
-            { label: 'Wincatt', value: wincatt },
-            { label: 'MTT', value: mtt },
-            { label: 'Atex', value: atex }
-        ];
-
-        let deviceFound = false;
-        devices.forEach(device => {
-            if (device.value) {
-                deviceFound = true;
-                const item = document.createElement('div');
-                item.className = 'device-name-item';
-                item.textContent = `${device.label}: ${device.value}`;
-                deviceNamesBox.appendChild(item);
-            }
-        });
+        // ✅ عرض اسم النوع الجديد فوق الصورة
+        const deviceTypeBox = document.getElementById('deviceTypeBox');
+        const deviceTypeName = document.getElementById('deviceTypeName');
         
-        if (!deviceFound) {
-            deviceNamesBox.style.display = 'none';
+        if (deviceType) {
+            deviceTypeName.textContent = deviceType;
+            deviceTypeBox.style.display = 'block';
+        } else {
+            deviceTypeBox.style.display = 'none';
         }
 
 
@@ -837,8 +824,8 @@
         const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
-        // أضفنا مفاتيح الأجهزة الجديدة هنا لتجنب تكرارها كـ "مكونات" في لوحة التفاصيل
-        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Wincatt Name', 'Wincatt', 'WINCATT', 'MTT Name', 'MTT', 'Atex Name', 'Atex', 'ATEX']; 
+        // تم تحديث قائمة المفاتيح الرئيسية لتشمل 'Name'
+        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type']; 
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
@@ -883,7 +870,6 @@
 
         // Display details table
         const detailsTable = document.getElementById('detailsTable');
-        // يتم استخدام قائمة المفاتيح الرئيسية لتخطيها
         const skipKeysList = mainAssetKeys; 
         let hasDetails = false;
 
