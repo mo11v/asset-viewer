@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* Styles are minimized for brevity, focusing on the list layout */
     :root{
       --primary: #2563eb;
       --primary-dark: #1e40af;
@@ -140,8 +139,7 @@
         <p>⚠️ لم يتمكن النظام من جلب الأجهزة. <span id="error-message"></span></p>
     </div>
 
-    <div id="assetList" class="asset-list">
-        </div>
+    <div id="assetList" class="asset-list"></div>
   </div>
 
   <script>
@@ -191,14 +189,17 @@
           const location = safeGet(asset, LOCATION_KEYS);
 
           if (unitId && systemName) {
+            // 👈 العنوان بالشكل: ATEX (121698)
+            const displayTitle = `${systemName} (${unitId})`;
+
             const card = document.createElement('a');
-            // ⚠️ ملاحظة: يجب أن تكون صفحة التفاصيل باسم asset-viewer.html أو أي اسم تستخدمه
+            // صفحة التفاصيل
             card.href = `asset-viewer.html?id=${encodeURIComponent(unitId)}`; 
             card.className = 'asset-card';
 
             card.innerHTML = `
               <div class="asset-info">
-                <h3>${systemName}</h3>
+                <h3>${displayTitle}</h3>
                 <p>الموقع: ${location || 'غير محدد'}</p>
               </div>
               <div class="unit-id">${unitId}</div>
