@@ -636,10 +636,8 @@
   </div>
 
   <script>
-    // ⚠️ Configuration - رابط OpenSheet
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
     
-    // Get query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
 
@@ -720,7 +718,6 @@
           throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
         }
 
-        // 🔍 Find the asset (مقارنة id بشكل case-insensitive)
         let asset = null;
         const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
         
@@ -742,7 +739,6 @@
           throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}. يرجى التحقق من الرابط أو الشيت.`);
         }
 
-        // Extract data
         const unit = safeGet(asset, idKeys) || 'غير محدد';
         const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Name', 'Asset Name']) || 'جهاز';
         const photo = safeGet(asset, ['ImageURL', 'Image Url', 'Image', 'Photo', 'image']);
@@ -753,32 +749,26 @@
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
 
-        // ✅ اسم النوع (مثلاً ATEX)
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        // Display UI
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ العنوان الرئيسي: ATEX (121698)
         const primaryName = deviceType || systemName;
         const assetTitleEl = document.getElementById('assetTitle');
         assetTitleEl.textContent = unit && unit !== 'غير محدد'
           ? `${primaryName} (${unit})`
           : primaryName;
 
-        // Status
         const statusInfo = classifyStatus(ready);
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.className = `status-badge ${statusInfo.cls}`;
         statusBadge.textContent = statusInfo.txt;
 
-        // Meta info
         document.getElementById('metaUnit').textContent = unit;
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
-        // ✅ صندوق النوع + رقم الـ Unit تحت منه
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
@@ -796,7 +786,6 @@
           deviceTypeBox.style.display = 'none';
         }
 
-        // Image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -818,7 +807,6 @@
           });
         }
 
-        // Components
         const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
@@ -864,7 +852,6 @@
           componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px 40px; color: var(--text-muted); font-style: italic;">لا توجد مكونات محددة أو تفاصيل إضافية عن المكونات.</div>';
         }
 
-        // Details table
         const detailsTable = document.getElementById('detailsTable');
         const skipKeysList = mainAssetKeys; 
         let hasDetails = false;
@@ -922,7 +909,6 @@
           document.getElementById('detailsSection').style.display = 'block';
         }
 
-        // Action buttons
         document.getElementById('btnChecklist').addEventListener('click', () => {
           if (!checklist) {
             alert('⚠️ لا يوجد رابط Checklist في البيانات');
