@@ -543,6 +543,54 @@
       .detail-label { width: 100%; }
       .device-type-name { font-size: 20px; }
     }
+
+    /* =========================
+       ✅ NEW: Report Modal Styles
+       ========================= */
+    .report-modal-box{
+      background: #fff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      box-shadow: var(--shadow-xl);
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: slideUp 0.3s ease;
+    }
+    .report-title{
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .report-hint{
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.6;
+    }
+    .report-textarea{
+      width: 100%;
+      min-height: 120px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      outline: none;
+      resize: vertical;
+    }
+    .report-textarea:focus{
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+    }
+    .report-note{
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -609,6 +657,12 @@
 
         <div class="actions-card">
           <div class="actions-grid">
+
+            <!-- ✅ NEW: Report Button -->
+            <button class="action-btn danger" id="btnReport">
+              🚨 الإبلاغ عن مشكلة
+            </button>
+
             <button class="action-btn primary" id="btnChecklist">
               📋 عرض Checklist
             </button>
@@ -628,6 +682,7 @@
     </div>
   </div>
 
+  <!-- Image Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">إغلاق ✕</button>
@@ -635,8 +690,26 @@
     </div>
   </div>
 
+  <!-- ✅ NEW: Report Modal -->
+  <div id="reportModal" class="modal" aria-hidden="true">
+    <div class="report-modal-box" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+      <button class="modal-close" id="reportClose">إغلاق ✕</button>
+      <h3 class="report-title" id="reportTitle">🚨 الإبلاغ عن مشكلة</h3>
+      <p class="report-hint">
+        اكتب وصف المشكلة، ثم اضغط إرسال. يمكنك إرفاق الصور/الفيديو من داخل واتساب قبل إرسال الرسالة.
+      </p>
+      <textarea id="problemDescription" class="report-textarea" placeholder="اكتب المشكلة هنا..."></textarea>
+      <p class="report-note">📎 بعد فتح واتساب، يرجى إرفاق الصور/الفيديو قبل إرسال الرسالة.</p>
+      <button class="action-btn danger" id="sendReportBtn">📤 إرسال البلاغ عبر WhatsApp</button>
+    </div>
+  </div>
+
   <script>
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
+
+    // ✅ رقم واتساب بزنس (صيغة دولية بدون +)
+    // 01202696247 -> 201202696247
+    const WHATSAPP_NUMBER = "201202696247";
     
     const urlParams = new URLSearchParams(window.location.search);
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
@@ -702,10 +775,83 @@
 
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+    // =========================
+    // ✅ NEW: Report Modal Logic
+    // =========================
+    const reportModal = document.getElementById('reportModal');
+    const btnReport = document.getElementById('btnReport');
+    const reportClose = document.getElementById('reportClose');
+    const sendReportBtn = document.getElementById('sendReportBtn');
+    const problemDescription = document.getElementById('problemDescription');
+
+    function openReportModal() {
+      reportModal.classList.add('open');
+      reportModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => problemDescription?.focus(), 50);
+    }
+
+    function closeReportModal() {
+      reportModal.classList.remove('open');
+      reportModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (problemDescription) problemDescription.value = '';
+    }
+
+    btnReport.addEventListener('click', openReportModal);
+    reportClose.addEventListener('click', closeReportModal);
+
+    reportModal.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeReportModal();
     });
 
+    // ESC يقفل الاتنين
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeReportModal();
+      }
+    });
+
+    // متغيرات الجهاز الحالية (هتتملي بعد جلب البيانات)
+    let currentDevice = '';
+    let currentUnit = '';
+    let currentLocation = '';
+    let currentStatus = '';
+    let currentLastCheck = '';
+
+    sendReportBtn.addEventListener('click', () => {
+      const desc = (problemDescription.value || '').trim();
+      if (!desc) {
+        alert('⚠️ من فضلك اكتب وصف المشكلة قبل الإرسال.');
+        return;
+      }
+
+      const lines = [
+        '🚨 QR Inspection – Problem Report',
+        '',
+        `Device: ${currentDevice || '--'}`,
+        `Unit: ${currentUnit || '--'}`,
+        `Location: ${currentLocation || '--'}`,
+        `Status: ${currentStatus || '--'}`,
+        `Last Inspection: ${currentLastCheck || '--'}`,
+        '',
+        'Problem Description:',
+        desc,
+        '',
+        '📎 Please attach photos/video before sending.'
+      ];
+
+      const message = encodeURIComponent(lines.join('\n'));
+      const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+      window.open(waUrl, '_blank');
+
+      closeReportModal();
+    });
+
+    // =========================
+    // Fetch & render asset data
+    // =========================
     fetch(SHEET_JSON)
       .then(response => {
         if (!response.ok) {
@@ -751,9 +897,17 @@
 
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
+        // ✅ نخزن بيانات البلاغ
+        currentDevice = deviceType || systemName || '--';
+        currentUnit = unit || '--';
+        currentLocation = location || '--';
+        currentStatus = ready || '--';
+        currentLastCheck = lastCheck || '--';
+
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
+        // ✅ العنوان يكون: ATEX (121696) بدل good (121696)
         const primaryName = deviceType || systemName;
         const assetTitleEl = document.getElementById('assetTitle');
         assetTitleEl.textContent = unit && unit !== 'غير محدد'
@@ -769,6 +923,7 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
         
+        // ✅ صندوق النوع فوق الصورة + Unit تحته
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
@@ -786,6 +941,7 @@
           deviceTypeBox.style.display = 'none';
         }
 
+        // الصورة
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -807,6 +963,7 @@
           });
         }
 
+        // components
         const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
         const components = [];
         const usedKeys = new Set();
@@ -852,6 +1009,7 @@
           componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px 40px; color: var(--text-muted); font-style: italic;">لا توجد مكونات محددة أو تفاصيل إضافية عن المكونات.</div>';
         }
 
+        // details
         const detailsTable = document.getElementById('detailsTable');
         const skipKeysList = mainAssetKeys; 
         let hasDetails = false;
@@ -909,6 +1067,7 @@
           document.getElementById('detailsSection').style.display = 'block';
         }
 
+        // actions
         document.getElementById('btnChecklist').addEventListener('click', () => {
           if (!checklist) {
             alert('⚠️ لا يوجد رابط Checklist في البيانات');
