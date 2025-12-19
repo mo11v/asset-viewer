@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>JAM Maintenance Team Viewer</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-  
+
   <style>
     :root{
       --primary: #2563eb;
@@ -26,11 +26,7 @@
       --radius-lg: 16px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -41,10 +37,7 @@
       line-height: 1.6;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1200px; margin: 0 auto; }
 
     .header-card {
       background: rgba(255, 255, 255, 0.95);
@@ -56,25 +49,14 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       animation: fadeIn 0.3s ease;
       display: flex;
-      justify-content: center; 
+      justify-content: center;
       align-items: center;
-      min-height: 120px; 
+      min-height: 120px;
     }
 
-    .combined-logo-wrapper {
-        width: 100%;
-        max-width: 550px; 
-        height: auto;
-        display: flex;
-        justify-content: center;
-    }
+    .combined-logo-wrapper { width: 100%; max-width: 550px; height: auto; display: flex; justify-content: center; }
+    .combined-logo-wrapper img { width: 100%; height: auto; object-fit: contain; }
 
-    .combined-logo-wrapper img {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-    }
-    
     .state-box {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -82,7 +64,7 @@
       text-align: center;
       box-shadow: var(--shadow-xl);
       animation: fadeIn 0.4s ease;
-      display: flex; 
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -99,22 +81,10 @@
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .state-text {
-      font-size: 16px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .error-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      color: var(--danger);
-    }
+    .state-text { font-size: 16px; color: var(--text-secondary); font-weight: 500; }
+    .error-icon { font-size: 48px; margin-bottom: 16px; color: var(--danger); }
 
     .content-grid {
       display: grid;
@@ -122,14 +92,9 @@
       gap: 24px;
       animation: fadeIn 0.5s ease;
     }
-
     @media (max-width: 1024px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        order: -1;
-      }
+      .content-grid { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
     }
 
     .main-panel {
@@ -137,6 +102,7 @@
       border-radius: var(--radius-lg);
       padding: 32px;
       box-shadow: var(--shadow-xl);
+      position: relative; /* ✅ مهم لزر التعديل الصغير */
     }
 
     .asset-header {
@@ -150,13 +116,7 @@
       margin-bottom: 24px;
     }
 
-    .asset-title {
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--text-primary);
-      flex: 1;
-      min-width: 200px;
-    }
+    .asset-title { font-size: 28px; font-weight: 900; color: var(--text-primary); flex: 1; min-width: 200px; }
 
     .status-badge {
       padding: 10px 20px;
@@ -168,26 +128,11 @@
       box-shadow: var(--shadow);
       animation: pulse 2s ease-in-out infinite;
     }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .status-badge.green {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .status-badge.yellow {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;
-    }
-
-    .status-badge.red {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-    }
+    .status-badge.green { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .status-badge.yellow { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+    .status-badge.red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
 
     .meta-grid {
       display: grid;
@@ -203,11 +148,7 @@
       border: 1px solid var(--border);
       transition: all 0.3s ease;
     }
-
-    .meta-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
+    .meta-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
     .meta-label {
       font-size: 12px;
@@ -234,7 +175,6 @@
       align-items: center;
       gap: 10px;
     }
-
     .section-title::before {
       content: '';
       width: 4px;
@@ -261,19 +201,9 @@
       gap: 12px;
       transition: all 0.3s ease;
     }
+    .component-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateX(-4px); }
 
-    .component-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow);
-      transform: translateX(-4px);
-    }
-
-    .component-name {
-      font-weight: 700;
-      color: var(--text-primary);
-      font-size: 15px;
-    }
-
+    .component-name { font-weight: 700; color: var(--text-primary); font-size: 15px; }
     .component-status {
       padding: 6px 12px;
       border-radius: 6px;
@@ -281,21 +211,9 @@
       font-size: 12px;
       white-space: nowrap;
     }
-
-    .component-status.green {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .component-status.yellow {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .component-status.red {
-      background: #fee2e2;
-      color: #991b1b;
-    }
+    .component-status.green { background: #d1fae5; color: #065f46; }
+    .component-status.yellow { background: #fef3c7; color: #92400e; }
+    .component-status.red { background: #fee2e2; color: #991b1b; }
 
     .details-table {
       background: #f8fafc;
@@ -310,14 +228,8 @@
       border-bottom: 1px solid var(--border);
       transition: background 0.2s ease;
     }
-
-    .detail-row:last-child {
-      border-bottom: none;
-    }
-
-    .detail-row:hover {
-      background: white;
-    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row:hover { background: white; }
 
     .detail-label {
       width: 200px;
@@ -326,63 +238,34 @@
       font-size: 14px;
       flex-shrink: 0;
     }
-
     .detail-value {
       flex: 1;
       color: var(--text-primary);
       font-weight: 500;
       word-break: break-word;
     }
+    .detail-value a { color: var(--primary); text-decoration: none; font-weight: 700; transition: color 0.2s ease; }
+    .detail-value a:hover { color: var(--primary-dark); text-decoration: underline; }
 
-    .detail-value a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      transition: color 0.2s ease;
-    }
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .image-card, .actions-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-xl); }
 
-    .detail-value a:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
-    }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .image-card, .actions-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-xl);
-    }
-    
-    /* صندوق نوع الجهاز + رقم الـ Unit تحت منه */
     .device-type-box {
-        padding: 0 0 16px 0;
-        margin-bottom: 16px;
-        border-bottom: 2px solid var(--primary-light);
-        text-align: center;
+      padding: 0 0 16px 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary-light);
+      text-align: center;
     }
-
     .device-type-name {
-        font-size: 24px;
-        font-weight: 900;
-        color: var(--primary-dark);
-        margin: 0;
-        padding: 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary-dark);
+      margin: 0;
+      padding: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-
-    .device-type-unit {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text-secondary);
-        margin-top: 4px;
-    }
+    .device-type-unit { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-top: 4px; }
 
     .asset-image-wrapper {
       position: relative;
@@ -393,18 +276,8 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
-    .asset-image-wrapper:hover {
-      transform: scale(1.02);
-    }
-
-    .asset-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
+    .asset-image-wrapper:hover { transform: scale(1.02); }
+    .asset-image { width: 100%; height: 100%; object-fit: cover; display: block; }
     .image-placeholder {
       display: flex;
       align-items: center;
@@ -416,11 +289,7 @@
       font-weight: 600;
     }
 
-    .actions-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .actions-grid { display: flex; flex-direction: column; gap: 12px; }
 
     .action-btn {
       padding: 16px 20px;
@@ -437,26 +306,10 @@
       text-decoration: none;
       font-family: 'Tajawal', sans-serif;
     }
-
-    .action-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .action-btn.primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-    }
-
-    .action-btn.success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .action-btn.danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-    }
+    .action-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .action-btn.primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .action-btn.success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .action-btn.danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
 
     .modal {
       position: fixed;
@@ -470,10 +323,7 @@
       padding: 20px;
       animation: fadeIn 0.3s ease;
     }
-
-    .modal.open {
-      display: flex;
-    }
+    .modal.open { display: flex; }
 
     .modal-content {
       max-width: 1200px;
@@ -484,11 +334,7 @@
       gap: 16px;
       animation: slideUp 0.3s ease;
     }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .modal-close {
       align-self: flex-end;
@@ -529,13 +375,8 @@
 
     @media (max-width: 768px) {
       body { padding: 12px; }
-      .header-card { 
-        padding: 16px; 
-        min-height: 100px;
-      }
-      .combined-logo-wrapper {
-        max-width: 90%;
-      }
+      .header-card { padding: 16px; min-height: 100px; }
+      .combined-logo-wrapper { max-width: 90%; }
       .main-panel { padding: 20px; }
       .asset-title { font-size: 20px; }
       .components-grid { grid-template-columns: 1fr; }
@@ -545,7 +386,7 @@
     }
 
     /* =========================
-       ✅ NEW: Report Modal Styles
+       ✅ Report Modal Styles
        ========================= */
     .report-modal-box{
       background: #fff;
@@ -559,18 +400,8 @@
       gap: 10px;
       animation: slideUp 0.3s ease;
     }
-    .report-title{
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin: 0;
-    }
-    .report-hint{
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin: 0;
-      line-height: 1.6;
-    }
+    .report-title{ font-size: 18px; font-weight: 900; color: var(--text-primary); margin: 0; }
+    .report-hint{ font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
     .report-textarea{
       width: 100%;
       min-height: 120px;
@@ -582,17 +413,76 @@
       outline: none;
       resize: vertical;
     }
-    .report-textarea:focus{
+    .report-textarea:focus{ border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+    .report-note{ font-size: 12px; color: var(--text-muted); margin: 0; }
+
+    /* =========================
+       ✅ Edit Mode Styles
+       ========================= */
+    .edit-mini-btn{
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.85);
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      display: none;
+    }
+    .edit-mini-btn:hover{ transform: translateY(-1px); }
+
+    .edit-actions-bar{
+      display: none;
+      gap: 10px;
+      margin-top: 14px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .edit-actions-bar.show{ display: flex; }
+
+    .small-btn{
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .small-btn.save{ background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+    .small-btn.cancel{ background: linear-gradient(135deg, #64748b, #475569); color: #fff; }
+
+    .edit-icon-btn{
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--primary-dark);
+      padding: 0 6px;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .edit-field{
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      outline: none;
+    }
+    .edit-field:focus{
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
     }
-    .report-note{
-      font-size: 12px;
-      color: var(--text-muted);
-      margin: 0;
-    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header-card">
@@ -639,7 +529,16 @@
         <div id="detailsSection" style="display: none;">
           <h3 class="section-title">تفاصيل إضافية</h3>
           <div class="details-table" id="detailsTable"></div>
+
+          <!-- ✅ Edit actions bar inside details section -->
+          <div class="edit-actions-bar" id="editActions">
+            <button class="small-btn save" id="btnSaveEdits">💾 حفظ</button>
+            <button class="small-btn cancel" id="btnCancelEdits">✖️ إلغاء</button>
+          </div>
         </div>
+
+        <!-- ✅ زر تعديل صغير أسفل البانل -->
+        <button class="edit-mini-btn" id="btnEditMode">✏️ تعديل</button>
       </div>
 
       <aside class="sidebar">
@@ -658,7 +557,6 @@
         <div class="actions-card">
           <div class="actions-grid">
 
-            <!-- ✅ NEW: Report Button -->
             <button class="action-btn danger" id="btnReport">
               🚨 الإبلاغ عن مشكلة
             </button>
@@ -682,7 +580,7 @@
     </div>
   </div>
 
-  <!-- Image Modal -->
+  <!-- Image/PDF Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">إغلاق ✕</button>
@@ -690,7 +588,7 @@
     </div>
   </div>
 
-  <!-- ✅ NEW: Report Modal -->
+  <!-- Report Modal -->
   <div id="reportModal" class="modal" aria-hidden="true">
     <div class="report-modal-box" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="modal-close" id="reportClose">إغلاق ✕</button>
@@ -705,12 +603,18 @@
   </div>
 
   <script>
+    // =========================
+    // Sheet source
+    // =========================
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
 
+    // ✅ Apps Script Web App (تعديل الشيت فعليًا)
+    const EDIT_API_URL = "https://script.google.com/macros/s/AKfycbyPVLj0P2A0epfGrMhJsiO_RGcPM9nYzwDtcLOMZHsCYJd0LQ6VHafH_6n17fI-ZkTpQA/exec";
+    const EDIT_PASSWORD = "112233";
+
     // ✅ رقم واتساب بزنس (صيغة دولية بدون +)
-    // 01202696247 -> 201202696247
     const WHATSAPP_NUMBER = "201202696247";
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
 
@@ -724,23 +628,25 @@
       return null;
     }
 
+    function normalizeId(v){
+      const s = String(v ?? '').trim().toLowerCase();
+      if (/^\d+$/.test(s)) return String(parseInt(s, 10)); // يشيل leading zeros
+      return s;
+    }
+
     function classifyStatus(text) {
       if (!text) return { cls: 'yellow', txt: 'غير محدد' };
-      
       const t = String(text).toLowerCase().trim();
-      
+
       if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) {
         return { cls: 'green', txt: text };
       }
-      
       if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) {
         return { cls: 'red', txt: text };
       }
-      
       if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) {
         return { cls: 'yellow', txt: text };
       }
-      
       return { cls: 'yellow', txt: text };
     }
 
@@ -751,8 +657,15 @@
       document.getElementById('errorMessage').textContent = message;
     }
 
+    // ✅ openModal: لو PDF افتحه في تاب جديدة، غير كده اعرض صورة في المودال
     function openModal(url) {
       if (!url) return;
+
+      if (/\.pdf([?#].*)?$/i.test(url)) {
+        window.open(url, '_blank');
+        return;
+      }
+
       const modal = document.getElementById('modal');
       const img = document.getElementById('modalImage');
       img.src = url;
@@ -764,19 +677,16 @@
       const modal = document.getElementById('modal');
       modal.classList.remove('open');
       document.body.style.overflow = '';
-      setTimeout(() => {
-        document.getElementById('modalImage').src = '';
-      }, 300);
+      setTimeout(() => { document.getElementById('modalImage').src = ''; }, 300);
     }
 
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === e.currentTarget) closeModal();
     });
-
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
     // =========================
-    // ✅ NEW: Report Modal Logic
+    // Report Modal Logic
     // =========================
     const reportModal = document.getElementById('reportModal');
     const btnReport = document.getElementById('btnReport');
@@ -800,12 +710,8 @@
 
     btnReport.addEventListener('click', openReportModal);
     reportClose.addEventListener('click', closeReportModal);
+    reportModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeReportModal(); });
 
-    reportModal.addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) closeReportModal();
-    });
-
-    // ESC يقفل الاتنين
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -822,10 +728,7 @@
 
     sendReportBtn.addEventListener('click', () => {
       const desc = (problemDescription.value || '').trim();
-      if (!desc) {
-        alert('⚠️ من فضلك اكتب وصف المشكلة قبل الإرسال.');
-        return;
-      }
+      if (!desc) { alert('⚠️ من فضلك اكتب وصف المشكلة قبل الإرسال.'); return; }
 
       const lines = [
         '🚨 QR Inspection – Problem Report',
@@ -835,6 +738,7 @@
         `Location: ${currentLocation || '--'}`,
         `Status: ${currentStatus || '--'}`,
         `Last Inspection: ${currentLastCheck || '--'}`,
+        `Page: ${window.location.href}`, // ✅ إضافة رابط الصفحة
         '',
         'Problem Description:',
         desc,
@@ -850,40 +754,164 @@
     });
 
     // =========================
+    // ✅ Edit Mode Logic
+    // =========================
+    let editModeUnlocked = false;
+    let pendingUpdates = {}; // { columnName: newValue }
+
+    const btnEditMode = document.getElementById('btnEditMode');
+    const editActions = document.getElementById('editActions');
+    const btnSaveEdits = document.getElementById('btnSaveEdits');
+    const btnCancelEdits = document.getElementById('btnCancelEdits');
+
+    function wrapEditableValue(element, columnName) {
+      if (!element || element.dataset.editWrapped === "1") return null;
+
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.gap = '8px';
+
+      const valueSpan = document.createElement('span');
+      valueSpan.textContent = element.textContent;
+      valueSpan.style.flex = '1';
+      valueSpan.style.minWidth = '0';
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'edit-icon-btn';
+      editBtn.type = 'button';
+      editBtn.textContent = '✏️';
+      editBtn.title = 'تعديل';
+
+      editBtn.addEventListener('click', () => {
+        const currentVal = valueSpan.textContent || '';
+        const input = document.createElement('input');
+        input.className = 'edit-field';
+        input.value = currentVal;
+
+        wrapper.replaceChild(input, valueSpan);
+        input.focus();
+        input.select();
+
+        const commit = () => {
+          const newVal = (input.value || '').trim();
+          valueSpan.textContent = newVal;
+          wrapper.replaceChild(valueSpan, input);
+
+          pendingUpdates[columnName] = newVal;
+        };
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') commit();
+          if (e.key === 'Escape') wrapper.replaceChild(valueSpan, input);
+        });
+
+        input.addEventListener('blur', commit);
+      });
+
+      wrapper.appendChild(valueSpan);
+      wrapper.appendChild(editBtn);
+
+      element.textContent = '';
+      element.appendChild(wrapper);
+
+      element.dataset.editWrapped = "1";
+      element.dataset.columnName = columnName;
+
+      return editBtn;
+    }
+
+    function setEditButtonsVisibility(show) {
+      document.querySelectorAll('.edit-icon-btn').forEach(btn => {
+        btn.style.display = show ? 'inline-flex' : 'none';
+      });
+      editActions.classList.toggle('show', show);
+    }
+
+    function unlockEditMode() {
+      const pass = prompt("أدخل باسورد التعديل:");
+      if (pass === null) return;
+      if (String(pass) !== EDIT_PASSWORD) { alert("❌ باسورد خطأ"); return; }
+
+      editModeUnlocked = true;
+      setEditButtonsVisibility(true);
+      alert("✅ وضع التعديل اتفعل\nعدّل القيم ثم اضغط حفظ.");
+    }
+
+    btnEditMode.addEventListener('click', unlockEditMode);
+
+    btnCancelEdits.addEventListener('click', () => {
+      pendingUpdates = {};
+      editModeUnlocked = false;
+      setEditButtonsVisibility(false);
+      location.reload();
+    });
+
+    btnSaveEdits.addEventListener('click', async () => {
+      if (!editModeUnlocked) { alert("⚠️ لازم تفتح وضع التعديل الأول"); return; }
+      if (!Object.keys(pendingUpdates).length) { alert("ℹ️ مفيش تغييرات للحفظ"); return; }
+      if (!EDIT_API_URL) { alert("⚠️ EDIT_API_URL مش متحدد"); return; }
+
+      const unitVal = currentUnit || queryId || '';
+      if (!unitVal) { alert("⚠️ مش قادر أحدد Unit"); return; }
+
+      const payload = {
+        password: EDIT_PASSWORD,
+        unit: unitVal,
+        updates: pendingUpdates
+      };
+
+      try {
+        const res = await fetch(EDIT_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          alert("❌ فشل الحفظ: " + (data.error || "Unknown error"));
+          return;
+        }
+
+        alert("✅ تم الحفظ على الشيت بنجاح");
+        pendingUpdates = {};
+        editModeUnlocked = false;
+        setEditButtonsVisibility(false);
+        location.reload();
+      } catch (err) {
+        alert("❌ حصل خطأ في الاتصال: " + err);
+      }
+    });
+
+    // =========================
     // Fetch & render asset data
     // =========================
     fetch(SHEET_JSON)
       .then(response => {
-        if (!response.ok) {
-          throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        }
+        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
         return response.json();
       })
       .then(rows => {
-        if (!rows || rows.length === 0) {
-          throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
-        }
+        if (!rows || rows.length === 0) throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
 
         let asset = null;
         const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
-        
+
         if (queryId) {
-          const queryIdNorm = String(queryId).trim().toLowerCase();
+          const queryIdNorm = normalizeId(queryId);
           asset = rows.find(row => {
             return idKeys.some(key => {
               const cell = row[key];
               if (cell === null || cell === undefined) return false;
-              const cellNorm = String(cell).trim().toLowerCase();
-              return cellNorm === queryIdNorm;
+              return normalizeId(cell) === queryIdNorm;
             });
           });
         } else {
           asset = rows[0];
         }
 
-        if (!asset) {
-          throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}. يرجى التحقق من الرابط أو الشيت.`);
-        }
+        if (!asset) throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}. يرجى التحقق من الرابط أو الشيت.`);
 
         const unit = safeGet(asset, idKeys) || 'غير محدد';
         const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Name', 'Asset Name']) || 'جهاز';
@@ -907,7 +935,10 @@
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ العنوان يكون: ATEX (121696) بدل good (121696)
+        // ✅ إظهار زر التعديل الصغير بعد التحميل
+        btnEditMode.style.display = 'inline-flex';
+
+        // ✅ العنوان يكون: ATEX (121696)
         const primaryName = deviceType || systemName;
         const assetTitleEl = document.getElementById('assetTitle');
         assetTitleEl.textContent = unit && unit !== 'غير محدد'
@@ -922,12 +953,19 @@
         document.getElementById('metaUnit').textContent = unit;
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
-        
+
+        // ✅ اربط الحقول الأساسية للتعديل (لازم أسماء الأعمدة تطابق Headers في الشيت)
+        wrapEditableValue(document.getElementById('metaUnit'), "Unit");
+        wrapEditableValue(document.getElementById('metaLocation'), "Location");
+        wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
+        wrapEditableValue(document.getElementById('statusBadge'), "Ready");
+        wrapEditableValue(document.getElementById('assetTitle'), "Name");
+
         // ✅ صندوق النوع فوق الصورة + Unit تحته
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
-        
+
         if (deviceType) {
           deviceTypeName.textContent = deviceType;
           if (unit && unit !== 'غير محدد') {
@@ -945,13 +983,13 @@
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
-        
+
         if (photo) {
           img.src = photo;
           img.style.display = 'block';
           placeholder.style.display = 'none';
           imgWrapper.style.cursor = 'pointer';
-          
+
           img.onerror = () => {
             img.style.display = 'none';
             placeholder.style.display = 'flex';
@@ -964,16 +1002,16 @@
         }
 
         // components
-        const componentKeys = ['Loadcell', 'Load Cell', 'Encoder', 'DumpValve', 'Dump Valve', 'Controller', 'PowerSupply', 'Power Supply', 'Cables', 'Cable', 'System', 'Valve', 'Sensor', 'Pump'];
+        const componentKeys = ['Loadcell','Load Cell','Encoder','DumpValve','Dump Valve','Controller','PowerSupply','Power Supply','Cables','Cable','System','Valve','Sensor','Pump'];
         const components = [];
         const usedKeys = new Set();
-        const mainAssetKeys = ['Unit', 'System', 'Location', 'Status', 'Ready', 'LastInspection', 'ImageURL', 'Checklist', 'RigSite', 'VideoLink', 'Photo', 'ID', 'Name', 'Type']; 
+        const mainAssetKeys = ['Unit','System','Location','Status','Ready','LastInspection','ImageURL','Checklist','RigSite','VideoLink','Photo','ID','Name','Type'];
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
           const isComponent = componentKeys.some(comp => keyLower.includes(comp.toLowerCase()));
           const isMainKey = mainAssetKeys.some(mk => keyLower.includes(mk.toLowerCase()));
-          
+
           if (isComponent && !isMainKey && !usedKeys.has(key)) {
             const val = asset[key];
             if (val !== null && val !== undefined && String(val).trim() !== '') {
@@ -985,22 +1023,25 @@
 
         const componentsArea = document.getElementById('componentsArea');
         componentsArea.innerHTML = '';
-        
+
         if (components.length > 0) {
           components.forEach(comp => {
             const card = document.createElement('div');
             card.className = 'component-card';
-            
+
             const name = document.createElement('div');
             name.className = 'component-name';
             name.textContent = comp.name;
-            
+
             const status = document.createElement('div');
             status.className = 'component-status';
             const statusI = classifyStatus(comp.value);
             status.classList.add(statusI.cls);
             status.textContent = statusI.txt;
-            
+
+            // ✅ خلي قيمة component قابلة للتعديل (اسم العمود = comp.name)
+            wrapEditableValue(status, comp.name);
+
             card.appendChild(name);
             card.appendChild(status);
             componentsArea.appendChild(card);
@@ -1011,16 +1052,17 @@
 
         // details
         const detailsTable = document.getElementById('detailsTable');
-        const skipKeysList = mainAssetKeys; 
+        detailsTable.innerHTML = ''; // ✅ مهم: منع تكرار الصفوف
+        const skipKeysList = mainAssetKeys;
         let hasDetails = false;
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
-          const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) || 
-                           components.some(c => c.name === key);
-          
+          const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) ||
+                             components.some(c => c.name === key);
+
           if (shouldSkip) return;
-          
+
           const val = asset[key];
           if (!val || String(val).trim() === '') return;
 
@@ -1036,17 +1078,16 @@
           value.className = 'detail-value';
 
           const valStr = String(val);
-          
-          if (valStr.match(/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)$/i)) {
+
+          // ✅ صور (يشمل ? و #)
+          if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
-            link.onclick = (e) => {
-              e.preventDefault();
-              openModal(valStr);
-            };
+            link.onclick = (e) => { e.preventDefault(); openModal(valStr); };
             value.appendChild(link);
           }
+          // روابط
           else if (valStr.startsWith('http')) {
             const link = document.createElement('a');
             link.href = valStr;
@@ -1054,8 +1095,10 @@
             link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
             value.appendChild(link);
           }
+          // نص عادي (✅ قابل للتعديل)
           else {
             value.textContent = valStr;
+            wrapEditableValue(value, key);
           }
 
           row.appendChild(label);
@@ -1069,18 +1112,12 @@
 
         // actions
         document.getElementById('btnChecklist').addEventListener('click', () => {
-          if (!checklist) {
-            alert('⚠️ لا يوجد رابط Checklist في البيانات');
-            return;
-          }
+          if (!checklist) { alert('⚠️ لا يوجد رابط Checklist في البيانات'); return; }
           openModal(checklist);
         });
 
         document.getElementById('btnRigSite').addEventListener('click', () => {
-          if (!rigsite) {
-            alert('⚠️ لا يوجد رابط Rig Site في البيانات');
-            return;
-          }
+          if (!rigsite) { alert('⚠️ لا يوجد رابط Rig Site في البيانات'); return; }
           openModal(rigsite);
         });
 
