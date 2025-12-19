@@ -102,7 +102,7 @@
       border-radius: var(--radius-lg);
       padding: 32px;
       box-shadow: var(--shadow-xl);
-      position: relative; /* ✅ مهم لزر التعديل الصغير */
+      position: relative;
     }
 
     .asset-header {
@@ -129,7 +129,6 @@
       animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-
     .status-badge.green { background: linear-gradient(135deg, #10b981, #059669); color: white; }
     .status-badge.yellow { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
     .status-badge.red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
@@ -220,6 +219,7 @@
       border-radius: var(--radius);
       overflow: hidden;
       border: 1px solid var(--border);
+      margin-bottom: 14px;
     }
 
     .detail-row {
@@ -417,13 +417,11 @@
     .report-note{ font-size: 12px; color: var(--text-muted); margin: 0; }
 
     /* =========================
-       ✅ Edit Mode Styles
+       ✅ Edit Mode Styles (FIXED)
        ========================= */
     .edit-mini-btn{
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      padding: 8px 12px;
+      margin-top: 12px;           /* ✅ بدل absolute عشان يبان في كل الأجهزة */
+      padding: 10px 14px;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.85);
@@ -433,17 +431,29 @@
       font-family: 'Tajawal', sans-serif;
       font-size: 13px;
       display: none;
+      width: fit-content;
     }
     .edit-mini-btn:hover{ transform: translateY(-1px); }
 
     .edit-actions-bar{
       display: none;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 12px;
       justify-content: flex-start;
       flex-wrap: wrap;
     }
     .edit-actions-bar.show{ display: flex; }
+
+    .edit-actions-bar.sticky{
+      position: sticky;
+      bottom: 12px;
+      background: rgba(255,255,255,0.95);
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      z-index: 5;
+    }
 
     .small-btn{
       padding: 10px 14px;
@@ -529,15 +539,15 @@
         <div id="detailsSection" style="display: none;">
           <h3 class="section-title">تفاصيل إضافية</h3>
           <div class="details-table" id="detailsTable"></div>
-
-          <!-- ✅ Edit actions bar inside details section -->
-          <div class="edit-actions-bar" id="editActions">
-            <button class="small-btn save" id="btnSaveEdits">💾 حفظ</button>
-            <button class="small-btn cancel" id="btnCancelEdits">✖️ إلغاء</button>
-          </div>
         </div>
 
-        <!-- ✅ زر تعديل صغير أسفل البانل -->
+        <!-- ✅ شريط حفظ/إلغاء (دايمًا موجود — مش مربوط بالـ detailsSection) -->
+        <div class="edit-actions-bar sticky" id="editActions">
+          <button class="small-btn save" id="btnSaveEdits">💾 حفظ</button>
+          <button class="small-btn cancel" id="btnCancelEdits">✖️ إلغاء</button>
+        </div>
+
+        <!-- ✅ زر تعديل صغير (هيظهر بعد تحميل البيانات) -->
         <button class="edit-mini-btn" id="btnEditMode">✏️ تعديل</button>
       </div>
 
@@ -556,20 +566,10 @@
 
         <div class="actions-card">
           <div class="actions-grid">
-
-            <button class="action-btn danger" id="btnReport">
-              🚨 الإبلاغ عن مشكلة
-            </button>
-
-            <button class="action-btn primary" id="btnChecklist">
-              📋 عرض Checklist
-            </button>
-            <button class="action-btn success" id="btnRigSite">
-              🏗️ عرض Rig Site
-            </button>
-            <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">
-              ▶️ تشغيل الفيديو
-            </a>
+            <button class="action-btn danger" id="btnReport">🚨 الإبلاغ عن مشكلة</button>
+            <button class="action-btn primary" id="btnChecklist">📋 عرض Checklist</button>
+            <button class="action-btn success" id="btnRigSite">🏗️ عرض Rig Site</button>
+            <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">▶️ تشغيل الفيديو</a>
           </div>
         </div>
       </aside>
@@ -593,9 +593,7 @@
     <div class="report-modal-box" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="modal-close" id="reportClose">إغلاق ✕</button>
       <h3 class="report-title" id="reportTitle">🚨 الإبلاغ عن مشكلة</h3>
-      <p class="report-hint">
-        اكتب وصف المشكلة، ثم اضغط إرسال. يمكنك إرفاق الصور/الفيديو من داخل واتساب قبل إرسال الرسالة.
-      </p>
+      <p class="report-hint">اكتب وصف المشكلة، ثم اضغط إرسال. يمكنك إرفاق الصور/الفيديو من داخل واتساب قبل إرسال الرسالة.</p>
       <textarea id="problemDescription" class="report-textarea" placeholder="اكتب المشكلة هنا..."></textarea>
       <p class="report-note">📎 بعد فتح واتساب، يرجى إرفاق الصور/الفيديو قبل إرسال الرسالة.</p>
       <button class="action-btn danger" id="sendReportBtn">📤 إرسال البلاغ عبر WhatsApp</button>
@@ -719,7 +717,7 @@
       }
     });
 
-    // متغيرات الجهاز الحالية (هتتملي بعد جلب البيانات)
+    // متغيرات الجهاز الحالية
     let currentDevice = '';
     let currentUnit = '';
     let currentLocation = '';
@@ -738,7 +736,7 @@
         `Location: ${currentLocation || '--'}`,
         `Status: ${currentStatus || '--'}`,
         `Last Inspection: ${currentLastCheck || '--'}`,
-        `Page: ${window.location.href}`, // ✅ إضافة رابط الصفحة
+        `Page: ${window.location.href}`,
         '',
         'Problem Description:',
         desc,
@@ -749,12 +747,11 @@
       const message = encodeURIComponent(lines.join('\n'));
       const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
       window.open(waUrl, '_blank');
-
       closeReportModal();
     });
 
     // =========================
-    // ✅ Edit Mode Logic
+    // ✅ Edit Mode Logic (FIXED)
     // =========================
     let editModeUnlocked = false;
     let pendingUpdates = {}; // { columnName: newValue }
@@ -797,7 +794,6 @@
           const newVal = (input.value || '').trim();
           valueSpan.textContent = newVal;
           wrapper.replaceChild(valueSpan, input);
-
           pendingUpdates[columnName] = newVal;
         };
 
@@ -805,7 +801,6 @@
           if (e.key === 'Enter') commit();
           if (e.key === 'Escape') wrapper.replaceChild(valueSpan, input);
         });
-
         input.addEventListener('blur', commit);
       });
 
@@ -850,7 +845,6 @@
     btnSaveEdits.addEventListener('click', async () => {
       if (!editModeUnlocked) { alert("⚠️ لازم تفتح وضع التعديل الأول"); return; }
       if (!Object.keys(pendingUpdates).length) { alert("ℹ️ مفيش تغييرات للحفظ"); return; }
-      if (!EDIT_API_URL) { alert("⚠️ EDIT_API_URL مش متحدد"); return; }
 
       const unitVal = currentUnit || queryId || '';
       if (!unitVal) { alert("⚠️ مش قادر أحدد Unit"); return; }
@@ -925,7 +919,7 @@
 
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        // ✅ نخزن بيانات البلاغ
+        // ✅ بيانات البلاغ
         currentDevice = deviceType || systemName || '--';
         currentUnit = unit || '--';
         currentLocation = location || '--';
@@ -935,10 +929,10 @@
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ إظهار زر التعديل الصغير بعد التحميل
+        // ✅ اظهار زر تعديل في كل الأجهزة
         btnEditMode.style.display = 'inline-flex';
 
-        // ✅ العنوان يكون: ATEX (121696)
+        // title
         const primaryName = deviceType || systemName;
         const assetTitleEl = document.getElementById('assetTitle');
         assetTitleEl.textContent = unit && unit !== 'غير محدد'
@@ -954,14 +948,14 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        // ✅ اربط الحقول الأساسية للتعديل (لازم أسماء الأعمدة تطابق Headers في الشيت)
+        // ✅ ربط الحقول للتعديل (اسم العمود = Header في الشيت)
         wrapEditableValue(document.getElementById('metaUnit'), "Unit");
         wrapEditableValue(document.getElementById('metaLocation'), "Location");
         wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
         wrapEditableValue(document.getElementById('statusBadge'), "Ready");
         wrapEditableValue(document.getElementById('assetTitle'), "Name");
 
-        // ✅ صندوق النوع فوق الصورة + Unit تحته
+        // صندوق النوع فوق الصورة
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
@@ -1039,7 +1033,7 @@
             status.classList.add(statusI.cls);
             status.textContent = statusI.txt;
 
-            // ✅ خلي قيمة component قابلة للتعديل (اسم العمود = comp.name)
+            // ✅ قابلة للتعديل
             wrapEditableValue(status, comp.name);
 
             card.appendChild(name);
@@ -1052,7 +1046,7 @@
 
         // details
         const detailsTable = document.getElementById('detailsTable');
-        detailsTable.innerHTML = ''; // ✅ مهم: منع تكرار الصفوف
+        detailsTable.innerHTML = '';
         const skipKeysList = mainAssetKeys;
         let hasDetails = false;
 
