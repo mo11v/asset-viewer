@@ -54,7 +54,7 @@
       min-height: 120px;
     }
 
-    .combined-logo-wrapper { width: 100%; max-width: 550px; height: auto; display: flex; justify-content: center; }
+    .combined-logo-wrapper { width: 100%; max-width: 550px; display: flex; justify-content: center; }
     .combined-logo-wrapper img { width: 100%; height: auto; object-fit: contain; }
 
     .state-box {
@@ -606,15 +606,17 @@
 
   <script>
     // =========================
-    // Sheet source
+    // Sheet source (READ)
     // =========================
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
 
-    // ✅ Apps Script Web App (تعديل الشيت فعليًا)
+    // =========================
+    // Sheet write API (Apps Script)
+    // =========================
     const EDIT_API_URL = "https://script.google.com/macros/s/AKfycbyPVLj0P2A0epfGrMhJsiO_RGcPM9nYzwDtcLOMZHsCYJd0LQ6VHafH_6n17fI-ZkTpQA/exec";
     const EDIT_PASSWORD = "112233";
 
-    // ✅ رقم واتساب بزنس (صيغة دولية بدون +)
+    // ✅ WhatsApp number (no +)
     const WHATSAPP_NUMBER = "201202696247";
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -632,7 +634,7 @@
 
     function normalizeId(v){
       const s = String(v ?? '').trim().toLowerCase();
-      if (/^\d+$/.test(s)) return String(parseInt(s, 10)); // يشيل leading zeros
+      if (/^\d+$/.test(s)) return String(parseInt(s, 10)); // remove leading zeros
       return s;
     }
 
@@ -659,7 +661,7 @@
       document.getElementById('errorMessage').textContent = message;
     }
 
-    // ✅ openModal: لو PDF افتحه في تاب جديدة، غير كده اعرض صورة في المودال
+    // ✅ openModal: if PDF => new tab, else show image modal
     function openModal(url) {
       if (!url) return;
 
@@ -721,7 +723,7 @@
       }
     });
 
-    // متغيرات الجهاز الحالية
+    // current device vars
     let currentDevice = '';
     let currentUnit = '';
     let currentLocation = '';
@@ -755,7 +757,7 @@
     });
 
     // =========================
-    // ✅ Edit Mode Logic (IMPROVED)
+    // ✅ Edit Mode Logic (CORS-SAFE)
     // =========================
     let editModeUnlocked = false;
     let pendingUpdates = {}; // { columnName: newValue }
@@ -836,14 +838,11 @@
       return editBtn;
     }
 
-    // ✅ دالة إظهار/إخفاء محسنة
     function setEditButtonsVisibility(show) {
       const editBtns = document.querySelectorAll('.edit-icon-btn');
       editBtns.forEach(btn => btn.style.display = show ? 'inline-flex' : 'none');
-
       editActions.classList.toggle('show', show);
-
-      logEdit("Visibility changed:", show, "Edit buttons:", editBtns.length);
+      logEdit("Visibility:", show, "Edit buttons:", editBtns.length);
       refreshSaveButtonState();
     }
 
@@ -874,7 +873,7 @@
       location.reload();
     });
 
-    // ✅ حفظ أقوى: يتعامل مع رد نص/JSON + يطلع تفاصيل الخطأ
+    // ✅ Save (FORM URLENCODED) => avoids CORS preflight
     btnSaveEdits.addEventListener('click', async () => {
       logEdit("Save clicked");
 
@@ -895,20 +894,18 @@
         return;
       }
 
-      const payload = {
-        password: EDIT_PASSWORD,
-        unit: unitVal,
-        updates: pendingUpdates
-      };
+      const form = new URLSearchParams();
+      form.append("password", EDIT_PASSWORD);
+      form.append("unit", unitVal);
+      form.append("updates", JSON.stringify(pendingUpdates));
 
-      logEdit("Sending payload:", payload);
+      logEdit("Sending FORM:", Object.fromEntries(form.entries()));
 
       try {
         const res = await fetch(EDIT_API_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-          mode: "cors"
+          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+          body: form.toString()
         });
 
         const rawText = await res.text();
@@ -919,15 +916,12 @@
         catch (_) { data = { ok: false, error: "INVALID_JSON_RESPONSE", rawText }; }
 
         if (!res.ok || !data.ok) {
-          const msg = `❌ فشل الحفظ\nStatus: ${res.status}\nError: ${data.error || "Unknown"}\n${data.details ? ("Details: " + data.details) : ""}`;
-          alert(msg);
+          alert(`❌ فشل الحفظ\nStatus: ${res.status}\nError: ${data.error || "Unknown"}\n${data.details ? ("Details: " + data.details) : ""}`);
           logEdit("Save failed:", data);
           return;
         }
 
         alert("✅ تم الحفظ على الشيت بنجاح");
-        logEdit("Save success:", data);
-
         pendingUpdates = {};
         editModeUnlocked = false;
         setEditButtonsVisibility(false);
@@ -939,7 +933,6 @@
       }
     });
 
-    // اول ما الصفحة تبدأ
     refreshSaveButtonState();
 
     // =========================
@@ -983,7 +976,7 @@
 
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        // بيانات البلاغ
+        // current vars
         currentDevice = deviceType || systemName || '--';
         currentUnit = unit || '--';
         currentLocation = location || '--';
@@ -993,7 +986,7 @@
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ اظهار زر تعديل
+        // show edit button after load
         btnEditMode.style.display = 'inline-flex';
 
         // title
@@ -1012,14 +1005,14 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        // ربط الحقول للتعديل (اسم العمود = Header في الشيت)
+        // editable mappings (sheet headers)
         wrapEditableValue(document.getElementById('metaUnit'), "Unit");
         wrapEditableValue(document.getElementById('metaLocation'), "Location");
         wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
         wrapEditableValue(document.getElementById('statusBadge'), "Ready");
         wrapEditableValue(document.getElementById('assetTitle'), "Name");
 
-        // صندوق النوع فوق الصورة
+        // device type box
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
@@ -1037,7 +1030,7 @@
           deviceTypeBox.style.display = 'none';
         }
 
-        // الصورة
+        // image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -1097,7 +1090,6 @@
             status.classList.add(statusI.cls);
             status.textContent = statusI.txt;
 
-            // قابلة للتعديل
             wrapEditableValue(status, comp.name);
 
             card.appendChild(name);
@@ -1137,24 +1129,19 @@
 
           const valStr = String(val);
 
-          // صور (يشمل ? و #)
           if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
             link.onclick = (e) => { e.preventDefault(); openModal(valStr); };
             value.appendChild(link);
-          }
-          // روابط
-          else if (valStr.startsWith('http')) {
+          } else if (valStr.startsWith('http')) {
             const link = document.createElement('a');
             link.href = valStr;
             link.target = '_blank';
             link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
             value.appendChild(link);
-          }
-          // نص عادي (قابل للتعديل)
-          else {
+          } else {
             value.textContent = valStr;
             wrapEditableValue(value, key);
           }
@@ -1164,9 +1151,7 @@
           detailsTable.appendChild(row);
         });
 
-        if (hasDetails) {
-          document.getElementById('detailsSection').style.display = 'block';
-        }
+        if (hasDetails) document.getElementById('detailsSection').style.display = 'block';
 
         // actions
         document.getElementById('btnChecklist').addEventListener('click', () => {
@@ -1180,11 +1165,7 @@
         });
 
         const btnVideo = document.getElementById('btnVideo');
-        if (video) {
-          btnVideo.style.display = 'flex';
-          btnVideo.href = video;
-        }
-
+        if (video) { btnVideo.style.display = 'flex'; btnVideo.href = video; }
       })
       .catch(error => {
         console.error('Error:', error);
