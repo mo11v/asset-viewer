@@ -417,23 +417,27 @@
     .report-note{ font-size: 12px; color: var(--text-muted); margin: 0; }
 
     /* =========================
-       ✅ Edit Mode Styles (FIXED)
+       ✅ Edit Mode Styles (IMPROVED)
        ========================= */
     .edit-mini-btn{
-      margin-top: 12px;           /* ✅ بدل absolute عشان يبان في كل الأجهزة */
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.85);
-      font-weight: 800;
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-weight: 900;
       cursor: pointer;
       box-shadow: var(--shadow-lg);
       font-family: 'Tajawal', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       display: none;
       width: fit-content;
     }
-    .edit-mini-btn:hover{ transform: translateY(-1px); }
+    .edit-mini-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
 
     .edit-actions-bar{
       display: none;
@@ -447,12 +451,12 @@
     .edit-actions-bar.sticky{
       position: sticky;
       bottom: 12px;
-      background: rgba(255,255,255,0.95);
-      padding: 10px;
-      border-radius: 12px;
+      background: rgba(255,255,255,0.98);
+      padding: 12px;
+      border-radius: 14px;
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
-      z-index: 5;
+      z-index: 10;
     }
 
     .small-btn{
@@ -541,14 +545,14 @@
           <div class="details-table" id="detailsTable"></div>
         </div>
 
-        <!-- ✅ شريط حفظ/إلغاء (دايمًا موجود — مش مربوط بالـ detailsSection) -->
+        <!-- ✅ زر التعديل قبل شريط الحفظ/الإلغاء -->
+        <button class="edit-mini-btn" id="btnEditMode">✏️ تعديل</button>
+
+        <!-- ✅ شريط حفظ/إلغاء -->
         <div class="edit-actions-bar sticky" id="editActions">
           <button class="small-btn save" id="btnSaveEdits">💾 حفظ</button>
           <button class="small-btn cancel" id="btnCancelEdits">✖️ إلغاء</button>
         </div>
-
-        <!-- ✅ زر تعديل صغير (هيظهر بعد تحميل البيانات) -->
-        <button class="edit-mini-btn" id="btnEditMode">✏️ تعديل</button>
       </div>
 
       <aside class="sidebar">
@@ -751,7 +755,7 @@
     });
 
     // =========================
-    // ✅ Edit Mode Logic (FIXED)
+    // ✅ Edit Mode Logic (IMPROVED)
     // =========================
     let editModeUnlocked = false;
     let pendingUpdates = {}; // { columnName: newValue }
@@ -760,6 +764,16 @@
     const editActions = document.getElementById('editActions');
     const btnSaveEdits = document.getElementById('btnSaveEdits');
     const btnCancelEdits = document.getElementById('btnCancelEdits');
+
+    function logEdit(...args){ console.log("[EDIT]", ...args); }
+
+    function refreshSaveButtonState(){
+      const hasChanges = Object.keys(pendingUpdates).length > 0;
+      btnSaveEdits.disabled = !hasChanges;
+      btnSaveEdits.style.opacity = hasChanges ? "1" : "0.6";
+      btnSaveEdits.style.cursor = hasChanges ? "pointer" : "not-allowed";
+      logEdit("Save button state:", hasChanges ? "ENABLED" : "DISABLED", pendingUpdates);
+    }
 
     function wrapEditableValue(element, columnName) {
       if (!element || element.dataset.editWrapped === "1") return null;
@@ -778,9 +792,11 @@
       editBtn.className = 'edit-icon-btn';
       editBtn.type = 'button';
       editBtn.textContent = '✏️';
-      editBtn.title = 'تعديل';
+      editBtn.title = `تعديل: ${columnName}`;
 
       editBtn.addEventListener('click', () => {
+        logEdit("Click edit field:", columnName);
+
         const currentVal = valueSpan.textContent || '';
         const input = document.createElement('input');
         input.className = 'edit-field';
@@ -794,13 +810,17 @@
           const newVal = (input.value || '').trim();
           valueSpan.textContent = newVal;
           wrapper.replaceChild(valueSpan, input);
+
           pendingUpdates[columnName] = newVal;
+          logEdit("Pending update set:", columnName, "=", newVal);
+          refreshSaveButtonState();
         };
 
         input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') commit();
           if (e.key === 'Escape') wrapper.replaceChild(valueSpan, input);
         });
+
         input.addEventListener('blur', commit);
       });
 
@@ -816,38 +836,64 @@
       return editBtn;
     }
 
+    // ✅ دالة إظهار/إخفاء محسنة
     function setEditButtonsVisibility(show) {
-      document.querySelectorAll('.edit-icon-btn').forEach(btn => {
-        btn.style.display = show ? 'inline-flex' : 'none';
-      });
+      const editBtns = document.querySelectorAll('.edit-icon-btn');
+      editBtns.forEach(btn => btn.style.display = show ? 'inline-flex' : 'none');
+
       editActions.classList.toggle('show', show);
+
+      logEdit("Visibility changed:", show, "Edit buttons:", editBtns.length);
+      refreshSaveButtonState();
     }
 
     function unlockEditMode() {
+      logEdit("Unlock requested");
       const pass = prompt("أدخل باسورد التعديل:");
       if (pass === null) return;
-      if (String(pass) !== EDIT_PASSWORD) { alert("❌ باسورد خطأ"); return; }
+
+      if (String(pass) !== EDIT_PASSWORD) {
+        alert("❌ باسورد خطأ");
+        logEdit("Wrong password");
+        return;
+      }
 
       editModeUnlocked = true;
       setEditButtonsVisibility(true);
       alert("✅ وضع التعديل اتفعل\nعدّل القيم ثم اضغط حفظ.");
+      logEdit("Unlocked successfully");
     }
 
     btnEditMode.addEventListener('click', unlockEditMode);
 
     btnCancelEdits.addEventListener('click', () => {
+      logEdit("Cancel clicked");
       pendingUpdates = {};
       editModeUnlocked = false;
       setEditButtonsVisibility(false);
       location.reload();
     });
 
+    // ✅ حفظ أقوى: يتعامل مع رد نص/JSON + يطلع تفاصيل الخطأ
     btnSaveEdits.addEventListener('click', async () => {
-      if (!editModeUnlocked) { alert("⚠️ لازم تفتح وضع التعديل الأول"); return; }
-      if (!Object.keys(pendingUpdates).length) { alert("ℹ️ مفيش تغييرات للحفظ"); return; }
+      logEdit("Save clicked");
 
-      const unitVal = currentUnit || queryId || '';
-      if (!unitVal) { alert("⚠️ مش قادر أحدد Unit"); return; }
+      if (!editModeUnlocked) {
+        alert("⚠️ لازم تفتح وضع التعديل الأول");
+        return;
+      }
+
+      if (!Object.keys(pendingUpdates).length) {
+        alert("ℹ️ مفيش تغييرات للحفظ");
+        return;
+      }
+
+      const unitVal = (currentUnit || queryId || '').trim();
+      if (!unitVal) {
+        alert("⚠️ مش قادر أحدد Unit");
+        logEdit("Missing unit");
+        return;
+      }
 
       const payload = {
         password: EDIT_PASSWORD,
@@ -855,28 +901,46 @@
         updates: pendingUpdates
       };
 
+      logEdit("Sending payload:", payload);
+
       try {
         const res = await fetch(EDIT_API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          mode: "cors"
         });
 
-        const data = await res.json().catch(() => ({}));
+        const rawText = await res.text();
+        logEdit("Raw response:", res.status, rawText);
+
+        let data = null;
+        try { data = JSON.parse(rawText); }
+        catch (_) { data = { ok: false, error: "INVALID_JSON_RESPONSE", rawText }; }
+
         if (!res.ok || !data.ok) {
-          alert("❌ فشل الحفظ: " + (data.error || "Unknown error"));
+          const msg = `❌ فشل الحفظ\nStatus: ${res.status}\nError: ${data.error || "Unknown"}\n${data.details ? ("Details: " + data.details) : ""}`;
+          alert(msg);
+          logEdit("Save failed:", data);
           return;
         }
 
         alert("✅ تم الحفظ على الشيت بنجاح");
+        logEdit("Save success:", data);
+
         pendingUpdates = {};
         editModeUnlocked = false;
         setEditButtonsVisibility(false);
         location.reload();
+
       } catch (err) {
-        alert("❌ حصل خطأ في الاتصال: " + err);
+        logEdit("Network error:", err);
+        alert("❌ حصل خطأ في الاتصال:\n" + err);
       }
     });
+
+    // اول ما الصفحة تبدأ
+    refreshSaveButtonState();
 
     // =========================
     // Fetch & render asset data
@@ -919,7 +983,7 @@
 
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        // ✅ بيانات البلاغ
+        // بيانات البلاغ
         currentDevice = deviceType || systemName || '--';
         currentUnit = unit || '--';
         currentLocation = location || '--';
@@ -929,7 +993,7 @@
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // ✅ اظهار زر تعديل في كل الأجهزة
+        // ✅ اظهار زر تعديل
         btnEditMode.style.display = 'inline-flex';
 
         // title
@@ -948,7 +1012,7 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        // ✅ ربط الحقول للتعديل (اسم العمود = Header في الشيت)
+        // ربط الحقول للتعديل (اسم العمود = Header في الشيت)
         wrapEditableValue(document.getElementById('metaUnit'), "Unit");
         wrapEditableValue(document.getElementById('metaLocation'), "Location");
         wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
@@ -1033,7 +1097,7 @@
             status.classList.add(statusI.cls);
             status.textContent = statusI.txt;
 
-            // ✅ قابلة للتعديل
+            // قابلة للتعديل
             wrapEditableValue(status, comp.name);
 
             card.appendChild(name);
@@ -1073,7 +1137,7 @@
 
           const valStr = String(val);
 
-          // ✅ صور (يشمل ? و #)
+          // صور (يشمل ? و #)
           if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
@@ -1089,7 +1153,7 @@
             link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
             value.appendChild(link);
           }
-          // نص عادي (✅ قابل للتعديل)
+          // نص عادي (قابل للتعديل)
           else {
             value.textContent = valStr;
             wrapEditableValue(value, key);
