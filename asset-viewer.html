@@ -611,9 +611,9 @@
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
 
     // =========================
-    // Sheet write API (Apps Script)
+    // Sheet write API (Apps Script) ✅ UPDATED
     // =========================
-    const EDIT_API_URL = "https://script.google.com/macros/s/AKfycbyPVLj0P2A0epfGrMhJsiO_RGcPM9nYzwDtcLOMZHsCYJd0LQ6VHafH_6n17fI-ZkTpQA/exec";
+    const EDIT_API_URL = "https://script.google.com/macros/s/AKfycbzI_7EPwuNaj5Y1CLqJK7SWkHUCgpzh651Io9YSL0bHdxuzd6YkiB5tpYG3YwSJsiVesA/exec";
     const EDIT_PASSWORD = "112233";
 
     // ✅ WhatsApp number (no +)
@@ -634,7 +634,7 @@
 
     function normalizeId(v){
       const s = String(v ?? '').trim().toLowerCase();
-      if (/^\d+$/.test(s)) return String(parseInt(s, 10)); // remove leading zeros
+      if (/^\\d+$/.test(s)) return String(parseInt(s, 10));
       return s;
     }
 
@@ -661,11 +661,10 @@
       document.getElementById('errorMessage').textContent = message;
     }
 
-    // ✅ openModal: if PDF => new tab, else show image modal
     function openModal(url) {
       if (!url) return;
 
-      if (/\.pdf([?#].*)?$/i.test(url)) {
+      if (/\\.pdf([?#].*)?$/i.test(url)) {
         window.open(url, '_blank');
         return;
       }
@@ -750,7 +749,7 @@
         '📎 Please attach photos/video before sending.'
       ];
 
-      const message = encodeURIComponent(lines.join('\n'));
+      const message = encodeURIComponent(lines.join('\\n'));
       const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
       window.open(waUrl, '_blank');
       closeReportModal();
@@ -774,7 +773,7 @@
       btnSaveEdits.disabled = !hasChanges;
       btnSaveEdits.style.opacity = hasChanges ? "1" : "0.6";
       btnSaveEdits.style.cursor = hasChanges ? "pointer" : "not-allowed";
-      logEdit("Save button state:", hasChanges ? "ENABLED" : "DISABLED", pendingUpdates);
+      logEdit("Save state:", hasChanges ? "ENABLED" : "DISABLED", pendingUpdates);
     }
 
     function wrapEditableValue(element, columnName) {
@@ -797,7 +796,7 @@
       editBtn.title = `تعديل: ${columnName}`;
 
       editBtn.addEventListener('click', () => {
-        logEdit("Click edit field:", columnName);
+        logEdit("Edit field:", columnName);
 
         const currentVal = valueSpan.textContent || '';
         const input = document.createElement('input');
@@ -814,7 +813,7 @@
           wrapper.replaceChild(valueSpan, input);
 
           pendingUpdates[columnName] = newVal;
-          logEdit("Pending update set:", columnName, "=", newVal);
+          logEdit("Pending:", columnName, "=", newVal);
           refreshSaveButtonState();
         };
 
@@ -859,8 +858,8 @@
 
       editModeUnlocked = true;
       setEditButtonsVisibility(true);
-      alert("✅ وضع التعديل اتفعل\nعدّل القيم ثم اضغط حفظ.");
-      logEdit("Unlocked successfully");
+      alert("✅ وضع التعديل اتفعل\\nعدّل القيم ثم اضغط حفظ.");
+      logEdit("Unlocked");
     }
 
     btnEditMode.addEventListener('click', unlockEditMode);
@@ -916,7 +915,7 @@
         catch (_) { data = { ok: false, error: "INVALID_JSON_RESPONSE", rawText }; }
 
         if (!res.ok || !data.ok) {
-          alert(`❌ فشل الحفظ\nStatus: ${res.status}\nError: ${data.error || "Unknown"}\n${data.details ? ("Details: " + data.details) : ""}`);
+          alert(`❌ فشل الحفظ\\nStatus: ${res.status}\\nError: ${data.error || "Unknown"}\\n${data.details ? ("Details: " + data.details) : ""}`);
           logEdit("Save failed:", data);
           return;
         }
@@ -929,7 +928,7 @@
 
       } catch (err) {
         logEdit("Network error:", err);
-        alert("❌ حصل خطأ في الاتصال:\n" + err);
+        alert("❌ حصل خطأ في الاتصال:\\n" + err);
       }
     });
 
@@ -951,13 +950,7 @@
 
         if (queryId) {
           const queryIdNorm = normalizeId(queryId);
-          asset = rows.find(row => {
-            return idKeys.some(key => {
-              const cell = row[key];
-              if (cell === null || cell === undefined) return false;
-              return normalizeId(cell) === queryIdNorm;
-            });
-          });
+          asset = rows.find(row => idKeys.some(key => normalizeId(row[key]) === queryIdNorm));
         } else {
           asset = rows[0];
         }
@@ -973,10 +966,8 @@
         const ready = safeGet(asset, ['Ready', 'Status', 'State', 'status']) || 'غير محدد';
         const location = safeGet(asset, ['Location', 'Site', 'location']) || 'غير محدد';
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
-
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        // current vars
         currentDevice = deviceType || systemName || '--';
         currentUnit = unit || '--';
         currentLocation = location || '--';
@@ -986,15 +977,11 @@
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
-        // show edit button after load
         btnEditMode.style.display = 'inline-flex';
 
-        // title
         const primaryName = deviceType || systemName;
         const assetTitleEl = document.getElementById('assetTitle');
-        assetTitleEl.textContent = unit && unit !== 'غير محدد'
-          ? `${primaryName} (${unit})`
-          : primaryName;
+        assetTitleEl.textContent = unit && unit !== 'غير محدد' ? `${primaryName} (${unit})` : primaryName;
 
         const statusInfo = classifyStatus(ready);
         const statusBadge = document.getElementById('statusBadge');
@@ -1005,7 +992,7 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        // editable mappings (sheet headers)
+        // Editable core fields (headers must match sheet)
         wrapEditableValue(document.getElementById('metaUnit'), "Unit");
         wrapEditableValue(document.getElementById('metaLocation'), "Location");
         wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
@@ -1129,7 +1116,7 @@
 
           const valStr = String(val);
 
-          if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
+          if (/\\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
