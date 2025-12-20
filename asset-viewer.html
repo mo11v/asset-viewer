@@ -385,9 +385,6 @@
       .device-type-name { font-size: 20px; }
     }
 
-    /* =========================
-       ✅ Report Modal Styles
-       ========================= */
     .report-modal-box{
       background: #fff;
       border-radius: var(--radius-lg);
@@ -416,9 +413,6 @@
     .report-textarea:focus{ border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
     .report-note{ font-size: 12px; color: var(--text-muted); margin: 0; }
 
-    /* =========================
-       ✅ Edit Mode Styles (IMPROVED)
-       ========================= */
     .edit-mini-btn{
       margin-top: 12px;
       padding: 12px 16px;
@@ -545,10 +539,8 @@
           <div class="details-table" id="detailsTable"></div>
         </div>
 
-        <!-- ✅ زر التعديل قبل شريط الحفظ/الإلغاء -->
         <button class="edit-mini-btn" id="btnEditMode">✏️ تعديل</button>
 
-        <!-- ✅ شريط حفظ/إلغاء -->
         <div class="edit-actions-bar sticky" id="editActions">
           <button class="small-btn save" id="btnSaveEdits">💾 حفظ</button>
           <button class="small-btn cancel" id="btnCancelEdits">✖️ إلغاء</button>
@@ -584,7 +576,6 @@
     </div>
   </div>
 
-  <!-- Image/PDF Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">إغلاق ✕</button>
@@ -592,7 +583,6 @@
     </div>
   </div>
 
-  <!-- Report Modal -->
   <div id="reportModal" class="modal" aria-hidden="true">
     <div class="report-modal-box" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="modal-close" id="reportClose">إغلاق ✕</button>
@@ -605,18 +595,9 @@
   </div>
 
   <script>
-    // =========================
-    // Sheet source (READ)
-    // =========================
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
-
-    // =========================
-    // Sheet write API (Apps Script) ✅ UPDATED
-    // =========================
     const EDIT_API_URL = "https://script.google.com/macros/s/AKfycbzI_7EPwuNaj5Y1CLqJK7SWkHUCgpzh651Io9YSL0bHdxuzd6YkiB5tpYG3YwSJsiVesA/exec";
     const EDIT_PASSWORD = "112233";
-
-    // ✅ WhatsApp number (no +)
     const WHATSAPP_NUMBER = "201202696247";
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -625,32 +606,23 @@
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
-        }
+        if (val !== null && val !== undefined && String(val).trim() !== '') return String(val).trim();
       }
       return null;
     }
 
     function normalizeId(v){
       const s = String(v ?? '').trim().toLowerCase();
-      if (/^\\d+$/.test(s)) return String(parseInt(s, 10));
+      if (/^\d+$/.test(s)) return String(parseInt(s, 10));
       return s;
     }
 
     function classifyStatus(text) {
       if (!text) return { cls: 'yellow', txt: 'غير محدد' };
       const t = String(text).toLowerCase().trim();
-
-      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) {
-        return { cls: 'green', txt: text };
-      }
-      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) {
-        return { cls: 'red', txt: text };
-      }
-      if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) {
-        return { cls: 'yellow', txt: text };
-      }
+      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) return { cls: 'green', txt: text };
+      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) return { cls: 'red', txt: text };
+      if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) return { cls: 'yellow', txt: text };
       return { cls: 'yellow', txt: text };
     }
 
@@ -663,12 +635,7 @@
 
     function openModal(url) {
       if (!url) return;
-
-      if (/\\.pdf([?#].*)?$/i.test(url)) {
-        window.open(url, '_blank');
-        return;
-      }
-
+      if (/\.pdf([?#].*)?$/i.test(url)) { window.open(url, '_blank'); return; }
       const modal = document.getElementById('modal');
       const img = document.getElementById('modalImage');
       img.src = url;
@@ -683,14 +650,10 @@
       setTimeout(() => { document.getElementById('modalImage').src = ''; }, 300);
     }
 
-    document.getElementById('modal').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) closeModal();
-    });
+    document.getElementById('modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
-    // =========================
-    // Report Modal Logic
-    // =========================
+    // Report Modal
     const reportModal = document.getElementById('reportModal');
     const btnReport = document.getElementById('btnReport');
     const reportClose = document.getElementById('reportClose');
@@ -749,17 +712,17 @@
         '📎 Please attach photos/video before sending.'
       ];
 
-      const message = encodeURIComponent(lines.join('\\n'));
-      const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
-      window.open(waUrl, '_blank');
+      const message = encodeURIComponent(lines.join('\n'));
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
       closeReportModal();
     });
 
     // =========================
-    // ✅ Edit Mode Logic (CORS-SAFE)
+    // ✅ Edit Mode Logic (FIXED)
     // =========================
     let editModeUnlocked = false;
-    let pendingUpdates = {}; // { columnName: newValue }
+    let pendingUpdates = {};
+    let saveInProgress = false;
 
     const btnEditMode = document.getElementById('btnEditMode');
     const editActions = document.getElementById('editActions');
@@ -773,7 +736,6 @@
       btnSaveEdits.disabled = !hasChanges;
       btnSaveEdits.style.opacity = hasChanges ? "1" : "0.6";
       btnSaveEdits.style.cursor = hasChanges ? "pointer" : "not-allowed";
-      logEdit("Save state:", hasChanges ? "ENABLED" : "DISABLED", pendingUpdates);
     }
 
     function wrapEditableValue(element, columnName) {
@@ -795,9 +757,7 @@
       editBtn.textContent = '✏️';
       editBtn.title = `تعديل: ${columnName}`;
 
-      editBtn.addEventListener('click', () => {
-        logEdit("Edit field:", columnName);
-
+      editBtn.onclick = () => {
         const currentVal = valueSpan.textContent || '';
         const input = document.createElement('input');
         input.className = 'edit-field';
@@ -813,7 +773,6 @@
           wrapper.replaceChild(valueSpan, input);
 
           pendingUpdates[columnName] = newVal;
-          logEdit("Pending:", columnName, "=", newVal);
           refreshSaveButtonState();
         };
 
@@ -823,7 +782,7 @@
         });
 
         input.addEventListener('blur', commit);
-      });
+      };
 
       wrapper.appendChild(valueSpan);
       wrapper.appendChild(editBtn);
@@ -838,69 +797,46 @@
     }
 
     function setEditButtonsVisibility(show) {
-      const editBtns = document.querySelectorAll('.edit-icon-btn');
-      editBtns.forEach(btn => btn.style.display = show ? 'inline-flex' : 'none');
+      document.querySelectorAll('.edit-icon-btn').forEach(btn => btn.style.display = show ? 'inline-flex' : 'none');
       editActions.classList.toggle('show', show);
-      logEdit("Visibility:", show, "Edit buttons:", editBtns.length);
       refreshSaveButtonState();
     }
 
     function unlockEditMode() {
-      logEdit("Unlock requested");
       const pass = prompt("أدخل باسورد التعديل:");
       if (pass === null) return;
-
-      if (String(pass) !== EDIT_PASSWORD) {
-        alert("❌ باسورد خطأ");
-        logEdit("Wrong password");
-        return;
-      }
-
+      if (String(pass) !== EDIT_PASSWORD) { alert("❌ باسورد خطأ"); return; }
       editModeUnlocked = true;
       setEditButtonsVisibility(true);
-      alert("✅ وضع التعديل اتفعل\\nعدّل القيم ثم اضغط حفظ.");
-      logEdit("Unlocked");
+      alert("✅ وضع التعديل اتفعل\nعدّل القيم ثم اضغط حفظ.");
     }
 
-    btnEditMode.addEventListener('click', unlockEditMode);
+    // ✅ IMPORTANT: use onclick only (no addEventListener) to avoid double handlers
+    btnEditMode.onclick = unlockEditMode;
 
-    btnCancelEdits.addEventListener('click', () => {
-      logEdit("Cancel clicked");
+    btnCancelEdits.onclick = () => {
       pendingUpdates = {};
       editModeUnlocked = false;
       setEditButtonsVisibility(false);
       location.reload();
-    });
+    };
 
-    // ✅ Save (FORM URLENCODED) => avoids CORS preflight
-    btnSaveEdits.addEventListener('click', async () => {
-      logEdit("Save clicked");
-
-      if (!editModeUnlocked) {
-        alert("⚠️ لازم تفتح وضع التعديل الأول");
-        return;
-      }
-
-      if (!Object.keys(pendingUpdates).length) {
-        alert("ℹ️ مفيش تغييرات للحفظ");
-        return;
-      }
-
-      const unitVal = (currentUnit || queryId || '').trim();
-      if (!unitVal) {
-        alert("⚠️ مش قادر أحدد Unit");
-        logEdit("Missing unit");
-        return;
-      }
-
-      const form = new URLSearchParams();
-      form.append("password", EDIT_PASSWORD);
-      form.append("unit", unitVal);
-      form.append("updates", JSON.stringify(pendingUpdates));
-
-      logEdit("Sending FORM:", Object.fromEntries(form.entries()));
+    btnSaveEdits.onclick = async () => {
+      if (saveInProgress) return;
+      saveInProgress = true;
 
       try {
+        if (!editModeUnlocked) { alert("⚠️ لازم تفتح وضع التعديل الأول"); return; }
+        if (!Object.keys(pendingUpdates).length) { alert("ℹ️ مفيش تغييرات للحفظ"); return; }
+
+        const unitVal = (currentUnit || queryId || '').trim();
+        if (!unitVal) { alert("⚠️ مش قادر أحدد Unit"); return; }
+
+        const form = new URLSearchParams();
+        form.append("password", EDIT_PASSWORD);
+        form.append("unit", unitVal);
+        form.append("updates", JSON.stringify(pendingUpdates));
+
         const res = await fetch(EDIT_API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
@@ -908,15 +844,12 @@
         });
 
         const rawText = await res.text();
-        logEdit("Raw response:", res.status, rawText);
-
         let data = null;
         try { data = JSON.parse(rawText); }
         catch (_) { data = { ok: false, error: "INVALID_JSON_RESPONSE", rawText }; }
 
         if (!res.ok || !data.ok) {
-          alert(`❌ فشل الحفظ\\nStatus: ${res.status}\\nError: ${data.error || "Unknown"}\\n${data.details ? ("Details: " + data.details) : ""}`);
-          logEdit("Save failed:", data);
+          alert(`❌ فشل الحفظ\nStatus: ${res.status}\nError: ${data.error || "Unknown"}\n${data.details ? ("Details: " + data.details) : ""}`);
           return;
         }
 
@@ -924,24 +857,22 @@
         pendingUpdates = {};
         editModeUnlocked = false;
         setEditButtonsVisibility(false);
-        location.reload();
+
+        // ✅ reload بعد شوية لتفادي أي تضارب
+        setTimeout(() => location.reload(), 300);
 
       } catch (err) {
-        logEdit("Network error:", err);
-        alert("❌ حصل خطأ في الاتصال:\\n" + err);
+        alert("❌ حصل خطأ في الاتصال:\n" + err);
+      } finally {
+        saveInProgress = false;
       }
-    });
-
-    refreshSaveButtonState();
+    };
 
     // =========================
     // Fetch & render asset data
     // =========================
     fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        return response.json();
-      })
+      .then(response => { if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets.'); return response.json(); })
       .then(rows => {
         if (!rows || rows.length === 0) throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
 
@@ -955,7 +886,7 @@
           asset = rows[0];
         }
 
-        if (!asset) throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}. يرجى التحقق من الرابط أو الشيت.`);
+        if (!asset) throw new Error(`لم يتم العثور على الجهاز بالرقم: ${queryId || 'غير محدد'}.`);
 
         const unit = safeGet(asset, idKeys) || 'غير محدد';
         const systemName = safeGet(asset, ['System', 'system', 'System Name', 'Name', 'Asset Name']) || 'جهاز';
@@ -992,14 +923,12 @@
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        // Editable core fields (headers must match sheet)
         wrapEditableValue(document.getElementById('metaUnit'), "Unit");
         wrapEditableValue(document.getElementById('metaLocation'), "Location");
         wrapEditableValue(document.getElementById('metaLast'), "LastInspection");
         wrapEditableValue(document.getElementById('statusBadge'), "Ready");
         wrapEditableValue(document.getElementById('assetTitle'), "Name");
 
-        // device type box
         const deviceTypeBox = document.getElementById('deviceTypeBox');
         const deviceTypeName = document.getElementById('deviceTypeName');
         const deviceTypeUnit = document.getElementById('deviceTypeUnit');
@@ -1017,7 +946,6 @@
           deviceTypeBox.style.display = 'none';
         }
 
-        // image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
         const imgWrapper = document.getElementById('imageWrapper');
@@ -1039,7 +967,6 @@
           });
         }
 
-        // components
         const componentKeys = ['Loadcell','Load Cell','Encoder','DumpValve','Dump Valve','Controller','PowerSupply','Power Supply','Cables','Cable','System','Valve','Sensor','Pump'];
         const components = [];
         const usedKeys = new Set();
@@ -1049,7 +976,6 @@
           const keyLower = key.toLowerCase();
           const isComponent = componentKeys.some(comp => keyLower.includes(comp.toLowerCase()));
           const isMainKey = mainAssetKeys.some(mk => keyLower.includes(mk.toLowerCase()));
-
           if (isComponent && !isMainKey && !usedKeys.has(key)) {
             const val = asset[key];
             if (val !== null && val !== undefined && String(val).trim() !== '') {
@@ -1087,7 +1013,6 @@
           componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px 40px; color: var(--text-muted); font-style: italic;">لا توجد مكونات محددة أو تفاصيل إضافية عن المكونات.</div>';
         }
 
-        // details
         const detailsTable = document.getElementById('detailsTable');
         detailsTable.innerHTML = '';
         const skipKeysList = mainAssetKeys;
@@ -1095,11 +1020,8 @@
 
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
-          const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) ||
-                             components.some(c => c.name === key);
-
+          const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) || components.some(c => c.name === key);
           if (shouldSkip) return;
-
           const val = asset[key];
           if (!val || String(val).trim() === '') return;
 
@@ -1116,7 +1038,7 @@
 
           const valStr = String(val);
 
-          if (/\\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
+          if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
@@ -1140,7 +1062,6 @@
 
         if (hasDetails) document.getElementById('detailsSection').style.display = 'block';
 
-        // actions
         document.getElementById('btnChecklist').addEventListener('click', () => {
           if (!checklist) { alert('⚠️ لا يوجد رابط Checklist في البيانات'); return; }
           openModal(checklist);
