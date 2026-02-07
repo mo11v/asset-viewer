@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>قائمة الأصول</title>
+  <title>قائمة الأجهزة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -33,10 +33,7 @@
       text-rendering: geometricPrecision;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+    .container { max-width: 900px; margin: 0 auto; }
 
     .header-card {
       background: rgba(255, 255, 255, 0.95);
@@ -70,10 +67,7 @@
       color: var(--text-secondary);
     }
 
-    .asset-list {
-      display: grid;
-      gap: 16px;
-    }
+    .asset-list { display: grid; gap: 16px; }
 
     .asset-card {
       background: var(--card-bg);
@@ -202,13 +196,14 @@
       z-index: 9999;
       padding: 20px;
     }
+
     .qr-modal.open { display: flex; }
 
     .qr-modal-content {
       background: #ffffff;
       border-radius: 16px;
       padding: 20px 24px 24px;
-      max-width: 320px;
+      max-width: 340px;
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
@@ -222,18 +217,10 @@
     }
 
     .qr-modal-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
-
-    .qr-modal-close {
-      border: none;
-      background: transparent;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--text-secondary);
-    }
+    .qr-modal-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--text-secondary); }
     .qr-modal-close:hover { color: var(--primary-dark); }
 
     .qr-image-wrapper { margin: 10px 0 12px; }
-
     .qr-image-wrapper img {
       max-width: 220px;
       width: 100%;
@@ -273,7 +260,7 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" id="appRoot">
     <div class="header-card">
       <div class="logo-wrapper">
         <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="JAM Maintenance Team Logo">
@@ -313,6 +300,12 @@
   </div>
 
   <script>
+    // ✅ Anti-Duplicate Guard (حل مشكلة تكرار الصفحة)
+    (function () {
+      const roots = document.querySelectorAll('#appRoot');
+      if (roots.length > 1) roots.forEach((el, i) => { if (i > 0) el.remove(); });
+    })();
+
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
 
     const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
@@ -322,9 +315,7 @@
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
-        }
+        if (val !== null && val !== undefined && String(val).trim() !== '') return String(val).trim();
       }
       return null;
     }
@@ -337,14 +328,11 @@
 
     function buildAssetUrl(unitId) {
       const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-      return basePath + 'asset-viewer.html?id=' + encodeURIComponent(unitId);
+      return basePath + 'devices.html?id=' + encodeURIComponent(unitId);
     }
 
     fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        return response.json();
-      })
+      .then(r => { if (!r.ok) throw new Error('فشل الاتصال بخدمة Google Sheets.'); return r.json(); })
       .then(rows => {
         document.getElementById('loading').style.display = 'none';
         const assetListContainer = document.getElementById('assetList');
@@ -384,9 +372,9 @@
           assetListContainer.appendChild(card);
         });
       })
-      .catch(error => {
-        console.error('Error:', error);
-        displayError(error.message);
+      .catch(err => {
+        console.error(err);
+        displayError(err.message || 'حصل خطأ غير متوقع');
       });
 
     const qrModal = document.getElementById('qrModal');
@@ -404,12 +392,10 @@
       const url = qrBtn.dataset.url;
       if (!url) return;
 
-      const encoded = encodeURIComponent(url);
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}`;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
 
       qrImage.src = qrApi;
       qrLinkText.textContent = url;
-
       qrModal.classList.add('open');
     });
 
@@ -420,446 +406,8 @@
     }
 
     qrCloseBtn.addEventListener('click', closeQrModal);
-
-    qrModal.addEventListener('click', function (e) {
-      if (e.target === qrModal) closeQrModal();
-    });
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeQrModal();
-    });
-  </script>
-</body>
-</html> <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>قائمة الأصول</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --card-bg: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --border: #e2e8f0;
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      --radius-lg: 16px;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-      line-height: 1.6;
-      color: var(--text-primary);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: geometricPrecision;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .header-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px 18px;
-      margin-bottom: 24px;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-
-    .logo-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .logo-wrapper img {
-      max-width: 260px;
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      display: block;
-    }
-
-    .header-subtitle {
-      margin-top: 10px;
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .asset-list {
-      display: grid;
-      gap: 16px;
-    }
-
-    .asset-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
-      box-shadow: var(--shadow);
-      text-decoration: none;
-      color: var(--text-primary);
-      transition: all 0.2s ease;
-      border-right: 8px solid var(--primary);
-      position: relative;
-
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .asset-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-    }
-
-    .asset-info { min-width: 0; }
-
-    .asset-info h3 {
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 4px;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .asset-info p {
-      font-size: 14px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .asset-actions{
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .unit-id {
-      background: var(--primary);
-      color: white;
-      padding: 0 16px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 16px;
-      height: 44px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 92px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    .qr-btn {
-      border: none;
-      outline: none;
-      background: #e5edff;
-      color: var(--primary-dark);
-      padding: 0 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      font-family: 'Tajawal', sans-serif;
-      height: 44px;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .qr-btn span { font-size: 16px; line-height: 1; }
-
-    .qr-btn:hover {
-      background: var(--primary);
-      color: #fff;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    .loader-box, .error-box {
-      text-align: center;
-      padding: 50px;
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-    }
-
-    .loader {
-      border: 5px solid rgba(37, 99, 235, 0.2);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .qr-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 20px;
-    }
-    .qr-modal.open { display: flex; }
-
-    .qr-modal-content {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 20px 24px 24px;
-      max-width: 320px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
-    }
-
-    .qr-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .qr-modal-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
-
-    .qr-modal-close {
-      border: none;
-      background: transparent;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--text-secondary);
-    }
-    .qr-modal-close:hover { color: var(--primary-dark); }
-
-    .qr-image-wrapper { margin: 10px 0 12px; }
-
-    .qr-image-wrapper img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .qr-link {
-      font-size: 12px;
-      color: var(--text-secondary);
-      direction: ltr;
-      text-align: left;
-      word-break: break-all;
-      margin-top: 6px;
-    }
-
-    .footer {
-      margin-top: 24px;
-      text-align: center;
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      padding: 14px 18px;
-      color: rgba(255,255,255,0.95);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 12px; }
-      .header-card { padding: 16px; }
-      .logo-wrapper img { max-width: 220px; }
-      .asset-info h3, .asset-info p { white-space: normal; }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <div class="header-card">
-      <div class="logo-wrapper">
-        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="JAM Maintenance Team Logo">
-      </div>
-      <div class="header-subtitle">
-        اختر الجهاز لعرض التفاصيل الكاملة وحالته أو إنشاء QR Code له.
-      </div>
-    </div>
-
-    <div id="loading" class="loader-box">
-      <div class="loader"></div>
-      <p>جارِ تحميل قائمة الأجهزة...</p>
-    </div>
-
-    <div id="error" class="error-box" style="display: none;">
-      <p>⚠️ لم يتمكن النظام من جلب الأجهزة. <span id="error-message"></span></p>
-    </div>
-
-    <div id="assetList" class="asset-list"></div>
-
-    <div class="footer">
-      JAM Maintenance Team – Inspection • Repair • Reporting for field equipment.
-    </div>
-  </div>
-
-  <div id="qrModal" class="qr-modal">
-    <div class="qr-modal-content">
-      <div class="qr-modal-header">
-        <div class="qr-modal-title">QR Code للجهاز</div>
-        <button class="qr-modal-close" id="qrCloseBtn">&times;</button>
-      </div>
-      <div class="qr-image-wrapper">
-        <img id="qrImage" src="" alt="QR Code" />
-      </div>
-      <div class="qr-link" id="qrLinkText"></div>
-    </div>
-  </div>
-
-  <script>
-    const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
-
-    const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
-    const DEVICE_KEYS = ['Type', 'type', 'Name', 'name', 'System', 'system', 'System Name', 'Asset Name'];
-    const LOCATION_KEYS = ['Location', 'Site', 'location'];
-
-    function safeGet(obj, keys) {
-      for (const k of keys) {
-        const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
-        }
-      }
-      return null;
-    }
-
-    function displayError(message) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = 'block';
-      document.getElementById('error-message').textContent = message;
-    }
-
-    function buildAssetUrl(unitId) {
-      const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-      return basePath + 'asset-viewer.html?id=' + encodeURIComponent(unitId);
-    }
-
-    fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        return response.json();
-      })
-      .then(rows => {
-        document.getElementById('loading').style.display = 'none';
-        const assetListContainer = document.getElementById('assetList');
-
-        if (!rows || rows.length === 0) {
-          assetListContainer.innerHTML = '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
-          return;
-        }
-
-        rows.forEach(asset => {
-          const unitId = safeGet(asset, ID_KEYS);
-          const deviceName = safeGet(asset, DEVICE_KEYS) || 'جهاز';
-          const location = safeGet(asset, LOCATION_KEYS);
-
-          if (!unitId) return;
-
-          const displayTitle = `${deviceName} (${unitId})`;
-          const assetUrl = buildAssetUrl(unitId);
-
-          const card = document.createElement('a');
-          card.href = assetUrl;
-          card.className = 'asset-card';
-
-          card.innerHTML = `
-            <div class="asset-info">
-              <h3>${displayTitle}</h3>
-              <p>الموقع: ${location || 'غير محدد'}</p>
-            </div>
-            <div class="asset-actions">
-              <button class="qr-btn" type="button" data-url="${assetUrl}">
-                <span>🔳</span> QR
-              </button>
-              <div class="unit-id">${unitId}</div>
-            </div>
-          `;
-
-          assetListContainer.appendChild(card);
-        });
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        displayError(error.message);
-      });
-
-    const qrModal = document.getElementById('qrModal');
-    const qrImage = document.getElementById('qrImage');
-    const qrLinkText = document.getElementById('qrLinkText');
-    const qrCloseBtn = document.getElementById('qrCloseBtn');
-
-    document.addEventListener('click', function (e) {
-      const qrBtn = e.target.closest('.qr-btn');
-      if (!qrBtn) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const url = qrBtn.dataset.url;
-      if (!url) return;
-
-      const encoded = encodeURIComponent(url);
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}`;
-
-      qrImage.src = qrApi;
-      qrLinkText.textContent = url;
-
-      qrModal.classList.add('open');
-    });
-
-    function closeQrModal() {
-      qrModal.classList.remove('open');
-      qrImage.src = '';
-      qrLinkText.textContent = '';
-    }
-
-    qrCloseBtn.addEventListener('click', closeQrModal);
-
-    qrModal.addEventListener('click', function (e) {
-      if (e.target === qrModal) closeQrModal();
-    });
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeQrModal();
-    });
+    qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQrModal(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQrModal(); });
   </script>
 </body>
 </html>
