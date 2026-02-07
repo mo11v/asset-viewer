@@ -33,10 +33,7 @@
       text-rendering: geometricPrecision;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+    .container { max-width: 900px; margin: 0 auto; }
 
     .header-card {
       background: rgba(255, 255, 255, 0.95);
@@ -64,20 +61,14 @@
       display: block;
     }
 
-    /* ✅ شيلنا byline بالكامل (مش موجود) */
-
     .header-subtitle {
       margin-top: 10px;
       font-size: 14px;
       color: var(--text-secondary);
     }
 
-    .asset-list {
-      display: grid;
-      gap: 16px;
-    }
+    .asset-list { display: grid; gap: 16px; }
 
-    /* ✅ FIX: نخلي الكارت Grid ثابت علشان كل حاجة تبقى متوازية */
     .asset-card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -90,7 +81,7 @@
       position: relative;
 
       display: grid;
-      grid-template-columns: 1fr auto; /* info | actions */
+      grid-template-columns: 1fr auto;
       align-items: center;
       gap: 12px;
     }
@@ -100,9 +91,7 @@
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     }
 
-    .asset-info {
-      min-width: 0; /* ✅ مهم لتجنب كسر المحاذاة مع النص الطويل */
-    }
+    .asset-info { min-width: 0; }
 
     .asset-info h3 {
       font-size: 18px;
@@ -122,7 +111,6 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ FIX: container ثابت للزر + الرقم */
     .asset-actions{
       display: inline-flex;
       align-items: center;
@@ -130,7 +118,6 @@
       flex-shrink: 0;
     }
 
-    /* ✅ توحيد ارتفاع/محاذاة رقم الوحدة */
     .unit-id {
       background: var(--primary);
       color: white;
@@ -138,16 +125,15 @@
       border-radius: 10px;
       font-weight: 800;
       font-size: 16px;
-      height: 44px;                 /* ✅ */
-      display: inline-flex;         /* ✅ */
-      align-items: center;          /* ✅ */
-      justify-content: center;      /* ✅ */
-      min-width: 92px;              /* ✅ يحافظ على شكل ثابت */
-      line-height: 1;               /* ✅ */
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      line-height: 1;
       flex-shrink: 0;
     }
 
-    /* ✅ FIX: زر الـ QR بدون margin يمين/شمال عشوائي + نفس الارتفاع */
     .qr-btn {
       border: none;
       outline: none;
@@ -164,16 +150,12 @@
       gap: 6px;
       transition: all 0.2s ease;
       font-family: 'Tajawal', sans-serif;
-
-      height: 44px;                 /* ✅ */
-      line-height: 1;               /* ✅ */
+      height: 44px;
+      line-height: 1;
       white-space: nowrap;
     }
 
-    .qr-btn span {
-      font-size: 16px;
-      line-height: 1;
-    }
+    .qr-btn span { font-size: 16px; line-height: 1; }
 
     .qr-btn:hover {
       background: var(--primary);
@@ -201,12 +183,8 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* مودال عرض الـ QR */
     .qr-modal {
       position: fixed;
       inset: 0;
@@ -217,7 +195,6 @@
       z-index: 9999;
       padding: 20px;
     }
-
     .qr-modal.open { display: flex; }
 
     .qr-modal-content {
@@ -237,11 +214,7 @@
       margin-bottom: 16px;
     }
 
-    .qr-modal-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
+    .qr-modal-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
 
     .qr-modal-close {
       border: none;
@@ -250,11 +223,9 @@
       cursor: pointer;
       color: var(--text-secondary);
     }
-
     .qr-modal-close:hover { color: var(--primary-dark); }
 
     .qr-image-wrapper { margin: 10px 0 12px; }
-
     .qr-image-wrapper img {
       max-width: 220px;
       width: 100%;
@@ -288,19 +259,14 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .logo-wrapper img { max-width: 220px; }
-
-      /* ✅ على الموبايل: نخلي العنوان يكسر سطر لو طويل بدل ما يبوظ التوازي */
       .asset-info h3,
-      .asset-info p{
-        white-space: normal;
-      }
+      .asset-info p { white-space: normal; }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- الهيدر + اللوجو -->
     <div class="header-card">
       <div class="logo-wrapper">
         <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png"
@@ -322,13 +288,11 @@
 
     <div id="assetList" class="asset-list"></div>
 
-    <!-- فوتر / سلوغن -->
     <div class="footer">
       JAM Maintenance Team – Inspection • Repair • Reporting for field equipment.
     </div>
   </div>
 
-  <!-- 🧾 مودال الـ QR -->
   <div id="qrModal" class="qr-modal">
     <div class="qr-modal-content">
       <div class="qr-modal-header">
@@ -352,15 +316,15 @@
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
-        }
+        if (val !== null && val !== undefined && String(val).trim() !== '') return String(val).trim();
       }
       return null;
     }
 
     function displayError(message) {
-      document.getElementById('loading').style.display = 'none';
+      const loading = document.getElementById('loading');
+      if (loading) loading.remove();
+
       document.getElementById('error').style.display = 'block';
       document.getElementById('error-message').textContent = message;
     }
@@ -371,25 +335,25 @@
     }
 
     fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        return response.json();
-      })
+      .then(r => { if (!r.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.'); return r.json(); })
       .then(rows => {
-        document.getElementById('loading').style.display = 'none';
+        const loading = document.getElementById('loading');
+        if (loading) loading.remove();
+
         const assetListContainer = document.getElementById('assetList');
 
         if (!rows || rows.length === 0) {
-          assetListContainer.innerHTML = '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
+          assetListContainer.innerHTML =
+            '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
           return;
         }
 
         rows.forEach(asset => {
           const unitId = safeGet(asset, ID_KEYS);
+          if (!unitId) return;
+
           const deviceName = safeGet(asset, DEVICE_KEYS) || 'جهاز';
           const location = safeGet(asset, LOCATION_KEYS);
-
-          if (!unitId) return;
 
           const displayTitle = `${deviceName} (${unitId})`;
           const assetUrl = buildAssetUrl(unitId);
@@ -414,9 +378,9 @@
           assetListContainer.appendChild(card);
         });
       })
-      .catch(error => {
-        console.error('Error:', error);
-        displayError(error.message);
+      .catch(err => {
+        console.error('Error:', err);
+        displayError(err.message);
       });
 
     const qrModal = document.getElementById('qrModal');
@@ -424,7 +388,7 @@
     const qrLinkText = document.getElementById('qrLinkText');
     const qrCloseBtn = document.getElementById('qrCloseBtn');
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
       const qrBtn = e.target.closest('.qr-btn');
       if (!qrBtn) return;
 
@@ -439,7 +403,6 @@
 
       qrImage.src = qrApi;
       qrLinkText.textContent = url;
-
       qrModal.classList.add('open');
     });
 
@@ -450,14 +413,8 @@
     }
 
     qrCloseBtn.addEventListener('click', closeQrModal);
-
-    qrModal.addEventListener('click', function (e) {
-      if (e.target === qrModal) closeQrModal();
-    });
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeQrModal();
-    });
+    qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQrModal(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQrModal(); });
   </script>
 </body>
 </html> <!DOCTYPE html>
@@ -495,10 +452,7 @@
       text-rendering: geometricPrecision;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+    .container { max-width: 900px; margin: 0 auto; }
 
     .header-card {
       background: rgba(255, 255, 255, 0.95);
@@ -526,20 +480,14 @@
       display: block;
     }
 
-    /* ✅ شيلنا byline بالكامل (مش موجود) */
-
     .header-subtitle {
       margin-top: 10px;
       font-size: 14px;
       color: var(--text-secondary);
     }
 
-    .asset-list {
-      display: grid;
-      gap: 16px;
-    }
+    .asset-list { display: grid; gap: 16px; }
 
-    /* ✅ FIX: نخلي الكارت Grid ثابت علشان كل حاجة تبقى متوازية */
     .asset-card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -552,7 +500,7 @@
       position: relative;
 
       display: grid;
-      grid-template-columns: 1fr auto; /* info | actions */
+      grid-template-columns: 1fr auto;
       align-items: center;
       gap: 12px;
     }
@@ -562,9 +510,7 @@
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     }
 
-    .asset-info {
-      min-width: 0; /* ✅ مهم لتجنب كسر المحاذاة مع النص الطويل */
-    }
+    .asset-info { min-width: 0; }
 
     .asset-info h3 {
       font-size: 18px;
@@ -584,7 +530,6 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ FIX: container ثابت للزر + الرقم */
     .asset-actions{
       display: inline-flex;
       align-items: center;
@@ -592,7 +537,6 @@
       flex-shrink: 0;
     }
 
-    /* ✅ توحيد ارتفاع/محاذاة رقم الوحدة */
     .unit-id {
       background: var(--primary);
       color: white;
@@ -600,16 +544,15 @@
       border-radius: 10px;
       font-weight: 800;
       font-size: 16px;
-      height: 44px;                 /* ✅ */
-      display: inline-flex;         /* ✅ */
-      align-items: center;          /* ✅ */
-      justify-content: center;      /* ✅ */
-      min-width: 92px;              /* ✅ يحافظ على شكل ثابت */
-      line-height: 1;               /* ✅ */
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      line-height: 1;
       flex-shrink: 0;
     }
 
-    /* ✅ FIX: زر الـ QR بدون margin يمين/شمال عشوائي + نفس الارتفاع */
     .qr-btn {
       border: none;
       outline: none;
@@ -626,16 +569,12 @@
       gap: 6px;
       transition: all 0.2s ease;
       font-family: 'Tajawal', sans-serif;
-
-      height: 44px;                 /* ✅ */
-      line-height: 1;               /* ✅ */
+      height: 44px;
+      line-height: 1;
       white-space: nowrap;
     }
 
-    .qr-btn span {
-      font-size: 16px;
-      line-height: 1;
-    }
+    .qr-btn span { font-size: 16px; line-height: 1; }
 
     .qr-btn:hover {
       background: var(--primary);
@@ -663,12 +602,8 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* مودال عرض الـ QR */
     .qr-modal {
       position: fixed;
       inset: 0;
@@ -679,7 +614,6 @@
       z-index: 9999;
       padding: 20px;
     }
-
     .qr-modal.open { display: flex; }
 
     .qr-modal-content {
@@ -699,11 +633,7 @@
       margin-bottom: 16px;
     }
 
-    .qr-modal-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
+    .qr-modal-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
 
     .qr-modal-close {
       border: none;
@@ -712,11 +642,9 @@
       cursor: pointer;
       color: var(--text-secondary);
     }
-
     .qr-modal-close:hover { color: var(--primary-dark); }
 
     .qr-image-wrapper { margin: 10px 0 12px; }
-
     .qr-image-wrapper img {
       max-width: 220px;
       width: 100%;
@@ -750,19 +678,14 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .logo-wrapper img { max-width: 220px; }
-
-      /* ✅ على الموبايل: نخلي العنوان يكسر سطر لو طويل بدل ما يبوظ التوازي */
       .asset-info h3,
-      .asset-info p{
-        white-space: normal;
-      }
+      .asset-info p { white-space: normal; }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- الهيدر + اللوجو -->
     <div class="header-card">
       <div class="logo-wrapper">
         <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png"
@@ -784,13 +707,11 @@
 
     <div id="assetList" class="asset-list"></div>
 
-    <!-- فوتر / سلوغن -->
     <div class="footer">
       JAM Maintenance Team – Inspection • Repair • Reporting for field equipment.
     </div>
   </div>
 
-  <!-- 🧾 مودال الـ QR -->
   <div id="qrModal" class="qr-modal">
     <div class="qr-modal-content">
       <div class="qr-modal-header">
@@ -814,15 +735,15 @@
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') {
-          return String(val).trim();
-        }
+        if (val !== null && val !== undefined && String(val).trim() !== '') return String(val).trim();
       }
       return null;
     }
 
     function displayError(message) {
-      document.getElementById('loading').style.display = 'none';
+      const loading = document.getElementById('loading');
+      if (loading) loading.remove();
+
       document.getElementById('error').style.display = 'block';
       document.getElementById('error-message').textContent = message;
     }
@@ -833,25 +754,25 @@
     }
 
     fetch(SHEET_JSON)
-      .then(response => {
-        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.');
-        return response.json();
-      })
+      .then(r => { if (!r.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط والإعدادات العامة للجدول.'); return r.json(); })
       .then(rows => {
-        document.getElementById('loading').style.display = 'none';
+        const loading = document.getElementById('loading');
+        if (loading) loading.remove();
+
         const assetListContainer = document.getElementById('assetList');
 
         if (!rows || rows.length === 0) {
-          assetListContainer.innerHTML = '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
+          assetListContainer.innerHTML =
+            '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
           return;
         }
 
         rows.forEach(asset => {
           const unitId = safeGet(asset, ID_KEYS);
+          if (!unitId) return;
+
           const deviceName = safeGet(asset, DEVICE_KEYS) || 'جهاز';
           const location = safeGet(asset, LOCATION_KEYS);
-
-          if (!unitId) return;
 
           const displayTitle = `${deviceName} (${unitId})`;
           const assetUrl = buildAssetUrl(unitId);
@@ -876,9 +797,9 @@
           assetListContainer.appendChild(card);
         });
       })
-      .catch(error => {
-        console.error('Error:', error);
-        displayError(error.message);
+      .catch(err => {
+        console.error('Error:', err);
+        displayError(err.message);
       });
 
     const qrModal = document.getElementById('qrModal');
@@ -886,7 +807,7 @@
     const qrLinkText = document.getElementById('qrLinkText');
     const qrCloseBtn = document.getElementById('qrCloseBtn');
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
       const qrBtn = e.target.closest('.qr-btn');
       if (!qrBtn) return;
 
@@ -901,7 +822,6 @@
 
       qrImage.src = qrApi;
       qrLinkText.textContent = url;
-
       qrModal.classList.add('open');
     });
 
@@ -912,14 +832,8 @@
     }
 
     qrCloseBtn.addEventListener('click', closeQrModal);
-
-    qrModal.addEventListener('click', function (e) {
-      if (e.target === qrModal) closeQrModal();
-    });
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeQrModal();
-    });
+    qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQrModal(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQrModal(); });
   </script>
 </body>
 </html>
