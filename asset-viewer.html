@@ -576,10 +576,22 @@
     </div>
   </div>
 
+  <!-- ✅ Modal (Improved: Loader + Error + Better handling) -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">إغلاق ✕</button>
-      <img class="modal-image" id="modalImage" src="" alt="معاينة" />
+
+      <div id="modalLoader" class="state-box" style="min-height:220px; padding:30px; display:none;">
+        <div class="loader"></div>
+        <div class="state-text">جارِ تحميل الصورة...</div>
+      </div>
+
+      <div id="modalImgError" class="state-box" style="min-height:220px; padding:30px; display:none;">
+        <div class="error-icon">⚠️</div>
+        <div class="state-text">تعذّر عرض الصورة. تأكد أن الرابط مباشر وأن الصلاحيات Public.</div>
+      </div>
+
+      <img class="modal-image" id="modalImage" src="" alt="معاينة" style="display:none;" />
     </div>
   </div>
 
@@ -633,21 +645,110 @@
       document.getElementById('errorMessage').textContent = message;
     }
 
+    // ✅ Better image URL detection (not only .jpg endings)
+    function isProbablyImageUrl(url){
+      if (!url) return false;
+      const u = String(url).trim().toLowerCase();
+
+      // direct extensions
+      if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(u)) return true;
+
+      // common image hosts that may not end with extension
+      if (u.includes('drive.google.com')) return true;
+      if (u.includes('lh3.googleusercontent.com')) return true;
+      if (u.includes('i.ibb.co') || u.includes('ibb.co')) return true;
+      if (u.includes('imgur.com')) return true;
+
+      return false;
+    }
+
+    // ✅ Convert Drive/share links to direct
+    function toDirectImageUrl(url){
+      if (!url) return url;
+      let u = String(url).trim();
+
+      // encode spaces safely (without breaking already encoded)
+      try { u = encodeURI(u); } catch(e){}
+
+      // Drive file link: /file/d/ID/
+      const driveMatch = u.match(/drive\.google\.com\/file\/d\/([^\/]+)\//i);
+      if (driveMatch && driveMatch[1]) {
+        return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+      }
+
+      // Drive open?id=
+      const driveIdMatch =
+        u.match(/drive\.google\.com\/open\?id=([^&]+)/i) ||
+        u.match(/drive\.google\.com\/uc\?id=([^&]+)/i);
+
+      if (driveIdMatch && driveIdMatch[1]) {
+        return `https://drive.google.com/uc?export=download&id=${driveIdMatch[1]}`;
+      }
+
+      return u;
+    }
+
+    // ✅ Improved modal open (loader + error + fallback)
     function openModal(url) {
       if (!url) return;
+
+      // PDFs open new tab
       if (/\.pdf([?#].*)?$/i.test(url)) { window.open(url, '_blank'); return; }
+
       const modal = document.getElementById('modal');
       const img = document.getElementById('modalImage');
-      img.src = url;
+      const loader = document.getElementById('modalLoader');
+      const errBox = document.getElementById('modalImgError');
+
+      const finalUrl = toDirectImageUrl(url);
+
+      // reset
+      img.style.display = 'none';
+      errBox.style.display = 'none';
+      loader.style.display = 'flex';
+
+      // show modal
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
+
+      // attach handlers BEFORE setting src
+      img.onload = () => {
+        loader.style.display = 'none';
+        errBox.style.display = 'none';
+        img.style.display = 'block';
+      };
+
+      img.onerror = () => {
+        loader.style.display = 'none';
+        img.style.display = 'none';
+        errBox.style.display = 'flex';
+
+        // fallback open in new tab (some hosts block hotlinking in <img>)
+        setTimeout(() => {
+          window.open(finalUrl, '_blank');
+        }, 600);
+      };
+
+      // cache bust to reduce "stuck" loads on some mobile browsers
+      const bust = (finalUrl.includes('?') ? '&' : '?') + 'v=' + Date.now();
+      img.src = finalUrl + bust;
     }
 
     function closeModal() {
       const modal = document.getElementById('modal');
+      const img = document.getElementById('modalImage');
+      const loader = document.getElementById('modalLoader');
+      const errBox = document.getElementById('modalImgError');
+
       modal.classList.remove('open');
       document.body.style.overflow = '';
-      setTimeout(() => { document.getElementById('modalImage').src = ''; }, 300);
+
+      // reset content
+      loader.style.display = 'none';
+      errBox.style.display = 'none';
+      img.style.display = 'none';
+
+      setTimeout(() => { img.src = ''; }, 200);
     }
 
     document.getElementById('modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
@@ -729,8 +830,6 @@
     const btnSaveEdits = document.getElementById('btnSaveEdits');
     const btnCancelEdits = document.getElementById('btnCancelEdits');
 
-    function logEdit(...args){ console.log("[EDIT]", ...args); }
-
     function refreshSaveButtonState(){
       const hasChanges = Object.keys(pendingUpdates).length > 0;
       btnSaveEdits.disabled = !hasChanges;
@@ -811,7 +910,6 @@
       alert("✅ وضع التعديل اتفعل\nعدّل القيم ثم اضغط حفظ.");
     }
 
-    // ✅ IMPORTANT: use onclick only (no addEventListener) to avoid double handlers
     btnEditMode.onclick = unlockEditMode;
 
     btnCancelEdits.onclick = () => {
@@ -858,7 +956,6 @@
         editModeUnlocked = false;
         setEditButtonsVisibility(false);
 
-        // ✅ reload بعد شوية لتفادي أي تضارب
         setTimeout(() => location.reload(), 300);
 
       } catch (err) {
@@ -951,7 +1048,8 @@
         const imgWrapper = document.getElementById('imageWrapper');
 
         if (photo) {
-          img.src = photo;
+          const directPhoto = toDirectImageUrl(photo);
+          img.src = directPhoto;
           img.style.display = 'block';
           placeholder.style.display = 'none';
           imgWrapper.style.cursor = 'pointer';
@@ -962,6 +1060,7 @@
             imgWrapper.style.cursor = 'default';
           };
 
+          // ✅ click opens modal with loader + fallback
           imgWrapper.addEventListener('click', () => {
             if (img.src && img.style.display !== 'none') openModal(photo);
           });
@@ -1022,6 +1121,7 @@
           const keyLower = key.toLowerCase();
           const shouldSkip = skipKeysList.some(sk => keyLower.includes(sk.toLowerCase())) || components.some(c => c.name === key);
           if (shouldSkip) return;
+
           const val = asset[key];
           if (!val || String(val).trim() === '') return;
 
@@ -1036,9 +1136,10 @@
           const value = document.createElement('div');
           value.className = 'detail-value';
 
-          const valStr = String(val);
+          const valStr = String(val).trim();
 
-          if (/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg)([?#].*)?$/i.test(valStr)) {
+          // ✅ Improved: treat Drive / image hosts as image too
+          if (valStr.startsWith('http') && isProbablyImageUrl(valStr) && !/\.pdf([?#].*)?$/i.test(valStr)) {
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = '🖼️ عرض الصورة';
