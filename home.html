@@ -150,6 +150,7 @@
       gap: 6px;
       transition: all 0.2s ease;
       font-family: 'Tajawal', sans-serif;
+
       height: 44px;
       line-height: 1;
       white-space: nowrap;
@@ -196,14 +197,13 @@
       z-index: 9999;
       padding: 20px;
     }
-
     .qr-modal.open { display: flex; }
 
     .qr-modal-content {
       background: #ffffff;
       border-radius: 16px;
       padding: 20px 24px 24px;
-      max-width: 340px;
+      max-width: 320px;
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
@@ -217,7 +217,14 @@
     }
 
     .qr-modal-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
-    .qr-modal-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--text-secondary); }
+
+    .qr-modal-close {
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
     .qr-modal-close:hover { color: var(--primary-dark); }
 
     .qr-image-wrapper { margin: 10px 0 12px; }
@@ -254,16 +261,17 @@
       body { padding: 12px; }
       .header-card { padding: 16px; }
       .logo-wrapper img { max-width: 220px; }
-      .asset-info h3, .asset-info p { white-space: normal; }
+      .asset-info h3, .asset-info p{ white-space: normal; }
     }
   </style>
 </head>
 
 <body>
-  <div class="container" id="appRoot">
+  <div class="container">
     <div class="header-card">
       <div class="logo-wrapper">
-        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="JAM Maintenance Team Logo">
+        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png"
+             alt="JAM Maintenance Team Logo">
       </div>
       <div class="header-subtitle">
         اختر الجهاز لعرض التفاصيل الكاملة وحالته أو إنشاء QR Code له.
@@ -300,12 +308,6 @@
   </div>
 
   <script>
-    // ✅ Anti-Duplicate Guard (حل مشكلة تكرار الصفحة)
-    (function () {
-      const roots = document.querySelectorAll('#appRoot');
-      if (roots.length > 1) roots.forEach((el, i) => { if (i > 0) el.remove(); });
-    })();
-
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
 
     const ID_KEYS = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
@@ -315,7 +317,9 @@
     function safeGet(obj, keys) {
       for (const k of keys) {
         const val = obj[k];
-        if (val !== null && val !== undefined && String(val).trim() !== '') return String(val).trim();
+        if (val !== null && val !== undefined && String(val).trim() !== '') {
+          return String(val).trim();
+        }
       }
       return null;
     }
@@ -323,22 +327,27 @@
     function displayError(message) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('error').style.display = 'block';
-      document.getElementById('error-message').textContent = message;
+      document.getElementById('error-message').textContent = message || '';
     }
 
-    function buildAssetUrl(unitId) {
+    // ✅ مهم: اللينك يبقى على devices.html
+    function buildDeviceUrl(unitId) {
       const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
       return basePath + 'devices.html?id=' + encodeURIComponent(unitId);
     }
 
     fetch(SHEET_JSON)
-      .then(r => { if (!r.ok) throw new Error('فشل الاتصال بخدمة Google Sheets.'); return r.json(); })
+      .then(response => {
+        if (!response.ok) throw new Error('فشل الاتصال بخدمة Google Sheets. تحقق من الرابط وإعدادات الشيت.');
+        return response.json();
+      })
       .then(rows => {
         document.getElementById('loading').style.display = 'none';
         const assetListContainer = document.getElementById('assetList');
 
         if (!rows || rows.length === 0) {
-          assetListContainer.innerHTML = '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
+          assetListContainer.innerHTML =
+            '<div class="error-box" style="padding: 20px; margin-top: 20px;"><p>لا توجد أجهزة مسجلة في الشيت حالياً.</p></div>';
           return;
         }
 
@@ -350,10 +359,10 @@
           if (!unitId) return;
 
           const displayTitle = `${deviceName} (${unitId})`;
-          const assetUrl = buildAssetUrl(unitId);
+          const deviceUrl = buildDeviceUrl(unitId);
 
           const card = document.createElement('a');
-          card.href = assetUrl;
+          card.href = deviceUrl;
           card.className = 'asset-card';
 
           card.innerHTML = `
@@ -362,7 +371,7 @@
               <p>الموقع: ${location || 'غير محدد'}</p>
             </div>
             <div class="asset-actions">
-              <button class="qr-btn" type="button" data-url="${assetUrl}">
+              <button class="qr-btn" type="button" data-url="${deviceUrl}">
                 <span>🔳</span> QR
               </button>
               <div class="unit-id">${unitId}</div>
@@ -372,9 +381,9 @@
           assetListContainer.appendChild(card);
         });
       })
-      .catch(err => {
-        console.error(err);
-        displayError(err.message || 'حصل خطأ غير متوقع');
+      .catch(error => {
+        console.error('Error:', error);
+        displayError(error.message);
       });
 
     const qrModal = document.getElementById('qrModal');
@@ -392,7 +401,8 @@
       const url = qrBtn.dataset.url;
       if (!url) return;
 
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
+      const encoded = encodeURIComponent(url);
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}`;
 
       qrImage.src = qrApi;
       qrLinkText.textContent = url;
