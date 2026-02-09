@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>JAM Maintenance Team Viewer</title>
+  <title>JAM Maintenance Team - Device</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -67,6 +67,7 @@
       align-items: center;
       justify-content: center;
       min-height: 300px;
+      gap: 10px;
     }
 
     .loader {
@@ -77,12 +78,12 @@
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .state-text { font-size: 16px; color: var(--text-secondary); font-weight: 500; }
-    .error-icon { font-size: 48px; margin-bottom: 16px; color: var(--danger); }
+    .error-icon { font-size: 48px; color: var(--danger); }
 
     .content-grid {
       display: grid;
@@ -140,9 +141,7 @@
       padding: 20px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      transition: all 0.3s ease;
     }
-    .meta-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
     .meta-label {
       font-size: 12px;
@@ -193,15 +192,13 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      transition: all 0.3s ease;
     }
-    .component-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateX(-4px); }
 
-    .component-name { font-weight: 700; color: var(--text-primary); font-size: 15px; }
+    .component-name { font-weight: 800; color: var(--text-primary); font-size: 15px; }
     .component-status {
       padding: 6px 12px;
       border-radius: 6px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       white-space: nowrap;
     }
@@ -221,14 +218,12 @@
       display: flex;
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
-      transition: background 0.2s ease;
     }
     .detail-row:last-child { border-bottom: none; }
-    .detail-row:hover { background: white; }
 
     .detail-label {
       width: 200px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-secondary);
       font-size: 14px;
       flex-shrink: 0;
@@ -236,11 +231,11 @@
     .detail-value {
       flex: 1;
       color: var(--text-primary);
-      font-weight: 500;
+      font-weight: 600;
       word-break: break-word;
     }
-    .detail-value a { color: var(--primary); text-decoration: none; font-weight: 700; }
-    .detail-value a:hover { color: var(--primary-dark); text-decoration: underline; }
+    .detail-value a { color: var(--primary); text-decoration: none; font-weight: 900; }
+    .detail-value a:hover { text-decoration: underline; }
 
     .sidebar { display: flex; flex-direction: column; gap: 20px; }
     .image-card, .actions-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-xl); }
@@ -250,17 +245,10 @@
       margin-bottom: 16px;
       border-bottom: 2px solid var(--primary-light);
       text-align: center;
-      display:none;
+      display: none;
     }
-    .device-type-name {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--primary-dark);
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .device-type-unit { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-top: 4px; }
+    .device-type-name { font-size: 24px; font-weight: 900; color: var(--primary-dark); }
+    .device-type-unit { font-size: 14px; font-weight: 800; color: var(--text-secondary); margin-top: 4px; }
 
     .asset-image-wrapper {
       position: relative;
@@ -269,10 +257,8 @@
       aspect-ratio: 4/3;
       background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
       cursor: pointer;
-      transition: transform 0.3s ease;
     }
-    .asset-image-wrapper:hover { transform: scale(1.02); }
-    .asset-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .asset-image { width: 100%; height: 100%; object-fit: cover; display: none; }
     .image-placeholder {
       display: flex;
       align-items: center;
@@ -281,7 +267,7 @@
       height: 100%;
       font-size: 16px;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .actions-grid { display: flex; flex-direction: column; gap: 12px; }
@@ -290,17 +276,16 @@
       padding: 16px 20px;
       border-radius: var(--radius);
       border: none;
-      font-weight: 700;
+      font-weight: 900;
       font-size: 15px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: transform 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-decoration: none;
       font-family: 'Tajawal', sans-serif;
-      user-select:none;
     }
     .action-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .action-btn.primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
@@ -335,7 +320,7 @@
       color: var(--text-primary);
       padding: 12px 24px;
       border-radius: var(--radius);
-      font-weight: 700;
+      font-weight: 900;
       cursor: pointer;
       border: none;
       box-shadow: var(--shadow-lg);
@@ -351,7 +336,7 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow-xl);
       background: white;
-      display:none;
+      display: none;
     }
 
     .footer {
@@ -359,7 +344,7 @@
       padding: 24px;
       color: rgba(255, 255, 255, 0.9);
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       margin-top: 24px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
@@ -377,42 +362,14 @@
       .detail-label { width: 100%; }
       .device-type-name { font-size: 20px; }
     }
-
-    /* report modal */
-    .report-modal-box{
-      background: #fff;
-      border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 640px;
-      box-shadow: var(--shadow-xl);
-      padding: 18px 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .report-title{ font-size: 18px; font-weight: 900; color: var(--text-primary); margin: 0; }
-    .report-hint{ font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
-    .report-textarea{
-      width: 100%;
-      min-height: 120px;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-family: 'Tajawal', sans-serif;
-      font-size: 14px;
-      outline: none;
-      resize: vertical;
-    }
-    .report-textarea:focus{ border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
-    .report-note{ font-size: 12px; color: var(--text-muted); margin: 0; }
   </style>
 </head>
 
 <body>
-  <div class="container" id="appRoot">
+  <div class="container">
     <div class="header-card">
       <div class="combined-logo-wrapper">
-        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="شعار Premiere Casing Services و JAM Maintenance Team">
+        <img src="https://i.ibb.co/ZR4bYj5C/21451b26-6e0c-42d0-b0f5-ee9b71771b3a-removalai-preview.png" alt="JAM Maintenance Team">
       </div>
     </div>
 
@@ -421,12 +378,12 @@
       <div class="state-text">جارِ تحميل بيانات الجهاز من Google Sheets...</div>
     </div>
 
-    <div id="errorState" class="state-box" style="display: none;">
+    <div id="errorState" class="state-box" style="display:none;">
       <div class="error-icon">⚠️</div>
       <div class="state-text" id="errorMessage"></div>
     </div>
 
-    <div id="mainContent" class="content-grid" style="display: none;">
+    <div id="mainContent" class="content-grid" style="display:none;">
       <div class="main-panel">
         <div class="asset-header">
           <h2 class="asset-title" id="assetTitle">--</h2>
@@ -451,7 +408,7 @@
         <h3 class="section-title">مكونات النظام</h3>
         <div class="components-grid" id="componentsArea"></div>
 
-        <div id="detailsSection" style="display: none;">
+        <div id="detailsSection" style="display:none;">
           <h3 class="section-title">تفاصيل إضافية</h3>
           <div class="details-table" id="detailsTable"></div>
         </div>
@@ -465,17 +422,16 @@
           </div>
 
           <div class="asset-image-wrapper" id="imageWrapper">
-            <img class="asset-image" id="assetImage" src="" alt="صورة الجهاز" style="display: none;" />
+            <img class="asset-image" id="assetImage" src="" alt="صورة الجهاز" />
             <div class="image-placeholder" id="imagePlaceholder">لا توجد صورة</div>
           </div>
         </div>
 
         <div class="actions-card">
           <div class="actions-grid">
-            <button class="action-btn danger" id="btnReport">🚨 الإبلاغ عن مشكلة</button>
-            <button class="action-btn primary" id="btnChecklist" type="button">📋 عرض Checklist</button>
-            <button class="action-btn success" id="btnRigSite" type="button">🏗️ عرض Rig Site</button>
-            <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display: none;">▶️ تشغيل الفيديو</a>
+            <button class="action-btn primary" id="btnChecklist">📋 عرض Checklist</button>
+            <button class="action-btn success" id="btnRigSite">🏗️ عرض Rig Site</button>
+            <a class="action-btn danger" id="btnVideo" href="#" target="_blank" style="display:none;">▶️ تشغيل الفيديو</a>
           </div>
         </div>
       </aside>
@@ -486,53 +442,23 @@
     </div>
   </div>
 
-  <!-- ✅ Modal (Image Viewer) -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">إغلاق ✕</button>
-
       <div id="modalLoader" class="state-box" style="min-height:220px; padding:30px; display:none;">
         <div class="loader"></div>
         <div class="state-text">جارِ تحميل الصورة...</div>
       </div>
-
-      <div id="modalImgError" class="state-box" style="min-height:220px; padding:30px; display:none; gap:12px;">
+      <div id="modalImgError" class="state-box" style="min-height:220px; padding:30px; display:none;">
         <div class="error-icon">⚠️</div>
-        <div class="state-text" style="max-width:520px;">
-          تعذّر عرض الصورة داخل الصفحة.<br/>
-          تأكد أن الرابط مباشر وأن الصلاحيات <b>Public</b>.
-        </div>
-        <button id="btnCopyImageLink" class="action-btn primary" type="button" style="max-width:260px;">
-          📋 نسخ رابط الصورة
-        </button>
+        <div class="state-text">تعذّر عرض الصورة داخل الصفحة. تأكد أن الرابط مباشر والصلاحيات Public.</div>
       </div>
-
       <img class="modal-image" id="modalImage" src="" alt="معاينة" />
     </div>
   </div>
 
-  <!-- Report Modal -->
-  <div id="reportModal" class="modal" aria-hidden="true">
-    <div class="report-modal-box" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
-      <button class="modal-close" id="reportClose">إغلاق ✕</button>
-      <h3 class="report-title" id="reportTitle">🚨 الإبلاغ عن مشكلة</h3>
-      <p class="report-hint">اكتب وصف المشكلة، ثم اضغط إرسال. يمكنك إرفاق الصور/الفيديو من داخل واتساب قبل إرسال الرسالة.</p>
-      <textarea id="problemDescription" class="report-textarea" placeholder="اكتب المشكلة هنا..."></textarea>
-      <p class="report-note">📎 بعد فتح واتساب، يرجى إرفاق الصور/الفيديو قبل إرسال الرسالة.</p>
-      <button class="action-btn danger" id="sendReportBtn">📤 إرسال البلاغ عبر WhatsApp</button>
-    </div>
-  </div>
-
   <script>
-    // ✅ Anti-Duplicate Guard (حل مشكلة تكرار الصفحة)
-    (function () {
-      const roots = document.querySelectorAll('#appRoot');
-      if (roots.length > 1) roots.forEach((el, i) => { if (i > 0) el.remove(); });
-    })();
-
     const SHEET_JSON = "https://opensheet.elk.sh/1zO6S4g2aCpZ4CXrpkXNWn_Aifmhozo-mwOr3CGH5rpc/Sheet1";
-    const WHATSAPP_NUMBER = "201202696247";
-
     const urlParams = new URLSearchParams(window.location.search);
     const queryId = urlParams.get('id') || urlParams.get('unit') || urlParams.get('Unit');
 
@@ -553,9 +479,10 @@
     function classifyStatus(text) {
       if (!text) return { cls: 'yellow', txt: 'غير محدد' };
       const t = String(text).toLowerCase().trim();
-      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز')) return { cls: 'green', txt: text };
-      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف')) return { cls: 'red', txt: text };
-      if (t.match(/^(warn|needs|check|pending|yellow|attention|تحذير|يحتاج|فحص)$/i) || t.includes('warn') || t.includes('check') || t.includes('تحذير')) return { cls: 'yellow', txt: text };
+      if (t.match(/^(good|ok|yes|ready|green|true|working|operational|جيد|جاهز|نعم|يعمل)$/i) || t.includes('good') || t.includes('ok') || t.includes('جيد') || t.includes('جاهز'))
+        return { cls: 'green', txt: text };
+      if (t.match(/^(fault|faulty|bad|no|fail|damag|error|red|broken|down|تالف|خطأ|لا|معطل)$/i) || t.includes('fault') || t.includes('bad') || t.includes('fail') || t.includes('تالف'))
+        return { cls: 'red', txt: text };
       return { cls: 'yellow', txt: text };
     }
 
@@ -581,29 +508,19 @@
       if (!url) return url;
       let u = String(url).trim();
       try { u = encodeURI(u); } catch(e){}
-
       const driveMatch = u.match(/drive\.google\.com\/file\/d\/([^\/]+)\//i);
       if (driveMatch && driveMatch[1]) return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
-
       const driveIdMatch =
         u.match(/drive\.google\.com\/open\?id=([^&]+)/i) ||
         u.match(/drive\.google\.com\/uc\?id=([^&]+)/i);
-
       if (driveIdMatch && driveIdMatch[1]) return `https://drive.google.com/uc?export=view&id=${driveIdMatch[1]}`;
-
       return u;
     }
 
-    // ✅ Modal logic (NO external open for RigSite/Checklist)
-    let lastModalUrl = "";
-
+    // ✅ مودال عرض الصورة (ممنوع يفتح تبويب خارجي تلقائي)
     function openModal(url) {
       if (!url) return;
-
-      if (/\.pdf([?#].*)?$/i.test(url)) {
-        window.open(url, '_blank');
-        return;
-      }
+      if (/\.pdf([?#].*)?$/i.test(url)) { window.open(url, '_blank'); return; }
 
       const modal = document.getElementById('modal');
       const img = document.getElementById('modalImage');
@@ -611,7 +528,6 @@
       const errBox = document.getElementById('modalImgError');
 
       const finalUrl = toDirectImageUrl(url);
-      lastModalUrl = finalUrl;
 
       img.style.display = 'none';
       errBox.style.display = 'none';
@@ -630,7 +546,7 @@
         loader.style.display = 'none';
         img.style.display = 'none';
         errBox.style.display = 'flex';
-        // ❌ ممنوع فتح لينك خارجي تلقائيًا
+        // ❌ مفيش window.open هنا
       };
 
       const bust = (finalUrl.includes('?') ? '&' : '?') + 'v=' + Date.now();
@@ -648,104 +564,24 @@
       loader.style.display = 'none';
       errBox.style.display = 'none';
       img.style.display = 'none';
-      setTimeout(() => { img.src = ''; }, 200);
+      setTimeout(() => { img.src = ''; }, 100);
     }
 
     document.getElementById('modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
     document.getElementById('modalClose').addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    document.getElementById('btnCopyImageLink').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(lastModalUrl || "");
-        alert("✅ تم نسخ رابط الصورة");
-      } catch (e) {
-        const temp = document.createElement('textarea');
-        temp.value = lastModalUrl || "";
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        alert("✅ تم نسخ رابط الصورة");
-      }
-    });
-
-    // Report Modal
-    const reportModal = document.getElementById('reportModal');
-    const btnReport = document.getElementById('btnReport');
-    const reportClose = document.getElementById('reportClose');
-    const sendReportBtn = document.getElementById('sendReportBtn');
-    const problemDescription = document.getElementById('problemDescription');
-
-    function openReportModal() {
-      reportModal.classList.add('open');
-      reportModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => problemDescription?.focus(), 50);
-    }
-
-    function closeReportModal() {
-      reportModal.classList.remove('open');
-      reportModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      if (problemDescription) problemDescription.value = '';
-    }
-
-    btnReport.addEventListener('click', openReportModal);
-    reportClose.addEventListener('click', closeReportModal);
-    reportModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeReportModal(); });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-        closeReportModal();
-      }
-    });
-
-    // current device vars
-    let currentDevice = '';
-    let currentUnit = '';
-    let currentLocation = '';
-    let currentStatus = '';
-    let currentLastCheck = '';
-
-    sendReportBtn.addEventListener('click', () => {
-      const desc = (problemDescription.value || '').trim();
-      if (!desc) { alert('⚠️ من فضلك اكتب وصف المشكلة قبل الإرسال.'); return; }
-
-      const lines = [
-        '🚨 QR Inspection – Problem Report',
-        '',
-        `Device: ${currentDevice || '--'}`,
-        `Unit: ${currentUnit || '--'}`,
-        `Location: ${currentLocation || '--'}`,
-        `Status: ${currentStatus || '--'}`,
-        `Last Inspection: ${currentLastCheck || '--'}`,
-        `Page: ${window.location.href}`,
-        '',
-        'Problem Description:',
-        desc,
-        '',
-        '📎 Please attach photos/video before sending.'
-      ];
-
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');
-      closeReportModal();
-    });
-
-    // =========================
-    // Fetch & render asset data
-    // =========================
     fetch(SHEET_JSON)
       .then(r => { if (!r.ok) throw new Error('فشل الاتصال بخدمة Google Sheets.'); return r.json(); })
       .then(rows => {
         if (!rows || rows.length === 0) throw new Error('الشيت فارغ أو لا يحتوي على بيانات');
 
-        let asset = null;
         const idKeys = ['Unit', 'unit', 'UNIT', 'AssetID', 'Asset ID', 'ID', 'id'];
+        let asset = null;
 
         if (queryId) {
-          const queryIdNorm = normalizeId(queryId);
-          asset = rows.find(row => idKeys.some(key => normalizeId(row[key]) === queryIdNorm));
+          const q = normalizeId(queryId);
+          asset = rows.find(row => idKeys.some(k => normalizeId(row[k]) === q));
         } else {
           asset = rows[0];
         }
@@ -763,108 +599,91 @@
         const lastCheck = safeGet(asset, ['LastInspection', 'Last Check', 'Last Checked', 'LastCheck', 'Last Inspection']) || 'غير محدد';
         const deviceType = safeGet(asset, ['Name', 'name', 'Type', 'type']);
 
-        currentDevice = deviceType || systemName || '--';
-        currentUnit = unit || '--';
-        currentLocation = location || '--';
-        currentStatus = ready || '--';
-        currentLastCheck = lastCheck || '--';
-
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'grid';
 
         const primaryName = deviceType || systemName;
-        document.getElementById('assetTitle').textContent =
-          unit && unit !== 'غير محدد' ? `${primaryName} (${unit})` : primaryName;
+        document.getElementById('assetTitle').textContent = unit && unit !== 'غير محدد' ? `${primaryName} (${unit})` : primaryName;
 
-        const statusInfo = classifyStatus(ready);
-        const statusBadge = document.getElementById('statusBadge');
-        statusBadge.className = `status-badge ${statusInfo.cls}`;
-        statusBadge.textContent = statusInfo.txt;
+        const st = classifyStatus(ready);
+        const badge = document.getElementById('statusBadge');
+        badge.className = `status-badge ${st.cls}`;
+        badge.textContent = st.txt;
 
         document.getElementById('metaUnit').textContent = unit;
         document.getElementById('metaLocation').textContent = location;
         document.getElementById('metaLast').textContent = lastCheck;
 
-        const deviceTypeBox = document.getElementById('deviceTypeBox');
-        const deviceTypeName = document.getElementById('deviceTypeName');
-        const deviceTypeUnit = document.getElementById('deviceTypeUnit');
-
+        const typeBox = document.getElementById('deviceTypeBox');
         if (deviceType) {
-          deviceTypeName.textContent = deviceType;
-          deviceTypeUnit.textContent = unit && unit !== 'غير محدد' ? `Unit: ${unit}` : `Unit: --`;
-          deviceTypeBox.style.display = 'block';
+          typeBox.style.display = 'block';
+          document.getElementById('deviceTypeName').textContent = deviceType;
+          document.getElementById('deviceTypeUnit').textContent = `Unit: ${unit}`;
         } else {
-          deviceTypeBox.style.display = 'none';
+          typeBox.style.display = 'none';
         }
 
-        // main image
         const img = document.getElementById('assetImage');
         const placeholder = document.getElementById('imagePlaceholder');
-        const imgWrapper = document.getElementById('imageWrapper');
+        const wrapper = document.getElementById('imageWrapper');
 
         if (photo) {
-          img.src = toDirectImageUrl(photo);
+          const direct = toDirectImageUrl(photo);
+          img.src = direct;
           img.style.display = 'block';
           placeholder.style.display = 'none';
-          imgWrapper.style.cursor = 'pointer';
+          wrapper.onclick = () => openModal(photo);
 
           img.onerror = () => {
             img.style.display = 'none';
             placeholder.style.display = 'flex';
-            imgWrapper.style.cursor = 'default';
+            wrapper.onclick = null;
           };
-
-          imgWrapper.addEventListener('click', () => {
-            if (img.src && img.style.display !== 'none') openModal(photo);
-          });
+        } else {
+          img.style.display = 'none';
+          placeholder.style.display = 'flex';
+          wrapper.onclick = null;
         }
 
-        // components
         const componentKeys = ['Loadcell','Load Cell','Encoder','DumpValve','Dump Valve','Controller','PowerSupply','Power Supply','Cables','Cable','System','Valve','Sensor','Pump'];
-        const components = [];
-        const usedKeys = new Set();
         const mainAssetKeys = ['Unit','System','Location','Status','Ready','LastInspection','ImageURL','Checklist','RigSite','VideoLink','Photo','ID','Name','Type'];
 
+        const components = [];
         Object.keys(asset).forEach(key => {
           const keyLower = key.toLowerCase();
           const isComponent = componentKeys.some(comp => keyLower.includes(comp.toLowerCase()));
           const isMainKey = mainAssetKeys.some(mk => keyLower.includes(mk.toLowerCase()));
-          if (isComponent && !isMainKey && !usedKeys.has(key)) {
+          if (isComponent && !isMainKey) {
             const val = asset[key];
-            if (val !== null && val !== undefined && String(val).trim() !== '') {
-              components.push({ name: key, value: val });
-              usedKeys.add(key);
-            }
+            if (val !== null && val !== undefined && String(val).trim() !== '') components.push({ name: key, value: val });
           }
         });
 
-        const componentsArea = document.getElementById('componentsArea');
-        componentsArea.innerHTML = '';
-
-        if (components.length > 0) {
-          components.forEach(comp => {
+        const compArea = document.getElementById('componentsArea');
+        compArea.innerHTML = '';
+        if (components.length) {
+          components.forEach(c => {
             const card = document.createElement('div');
             card.className = 'component-card';
 
             const name = document.createElement('div');
             name.className = 'component-name';
-            name.textContent = comp.name;
+            name.textContent = c.name;
 
             const status = document.createElement('div');
             status.className = 'component-status';
-            const statusI = classifyStatus(comp.value);
-            status.classList.add(statusI.cls);
-            status.textContent = statusI.txt;
+            const si = classifyStatus(c.value);
+            status.classList.add(si.cls);
+            status.textContent = si.txt;
 
             card.appendChild(name);
             card.appendChild(status);
-            componentsArea.appendChild(card);
+            compArea.appendChild(card);
           });
         } else {
-          componentsArea.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px 40px; color: var(--text-muted); font-style: italic;">لا توجد مكونات محددة أو تفاصيل إضافية عن المكونات.</div>';
+          compArea.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);font-weight:700;">لا توجد مكونات محددة.</div>';
         }
 
-        // details section
         const detailsTable = document.getElementById('detailsTable');
         detailsTable.innerHTML = '';
         let hasDetails = false;
@@ -878,6 +697,7 @@
           if (!val || String(val).trim() === '') return;
 
           hasDetails = true;
+
           const row = document.createElement('div');
           row.className = 'detail-row';
 
@@ -888,22 +708,21 @@
           const value = document.createElement('div');
           value.className = 'detail-value';
 
-          const valStr = String(val).trim();
-
-          if (valStr.startsWith('http') && isProbablyImageUrl(valStr) && !/\.pdf([?#].*)?$/i.test(valStr)) {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.textContent = '🖼️ عرض الصورة';
-            link.onclick = (e) => { e.preventDefault(); openModal(valStr); };
-            value.appendChild(link);
-          } else if (valStr.startsWith('http')) {
-            const link = document.createElement('a');
-            link.href = valStr;
-            link.target = '_blank';
-            link.textContent = valStr.length > 50 ? valStr.substring(0, 50) + '...' : valStr;
-            value.appendChild(link);
+          const v = String(val).trim();
+          if (v.startsWith('http') && isProbablyImageUrl(v) && !/\.pdf([?#].*)?$/i.test(v)) {
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = '🖼️ عرض الصورة';
+            a.onclick = (e) => { e.preventDefault(); openModal(v); };
+            value.appendChild(a);
+          } else if (v.startsWith('http')) {
+            const a = document.createElement('a');
+            a.href = v;
+            a.target = '_blank';
+            a.textContent = v.length > 50 ? v.substring(0, 50) + '...' : v;
+            value.appendChild(a);
           } else {
-            value.textContent = valStr;
+            value.textContent = v;
           }
 
           row.appendChild(label);
@@ -913,16 +732,16 @@
 
         if (hasDetails) document.getElementById('detailsSection').style.display = 'block';
 
-        // Buttons: checklist & rigsite (inside modal only)
-        document.getElementById('btnChecklist').addEventListener('click', () => {
-          if (!checklist) { alert('⚠️ لا يوجد رابط Checklist في البيانات'); return; }
+        // ✅ Checklist / RigSite داخل المودال فقط (بدون تبويب خارجي)
+        document.getElementById('btnChecklist').onclick = () => {
+          if (!checklist) return alert('⚠️ لا يوجد رابط Checklist في البيانات');
           openModal(checklist);
-        });
+        };
 
-        document.getElementById('btnRigSite').addEventListener('click', () => {
-          if (!rigsite) { alert('⚠️ لا يوجد رابط Rig Site في البيانات'); return; }
+        document.getElementById('btnRigSite').onclick = () => {
+          if (!rigsite) return alert('⚠️ لا يوجد رابط Rig Site في البيانات');
           openModal(rigsite);
-        });
+        };
 
         const btnVideo = document.getElementById('btnVideo');
         if (video) { btnVideo.style.display = 'flex'; btnVideo.href = video; }
